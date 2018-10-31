@@ -108,8 +108,7 @@
 
             if (GetBook(book_id) != null && _genres.Any((genre) => genre.Id == genre_id))
             {
-                _bookGenrePair.Add(new BookGenrePair(book_id, genre_id));
-                result = true;
+                result = _bookGenrePair.Add(new BookGenrePair(book_id, genre_id));
             }
 
             return result;
@@ -126,8 +125,7 @@
             bool result = false;
             if (GetBook(book_id) != null && GetAuthor(author_id) != null)
             {
-                _bookAuthorPair.Add(new BookAuthorPair(book_id, author_id));
-                result = true;
+                result = _bookAuthorPair.Add(new BookAuthorPair(book_id, author_id));
             }
 
             return result;

@@ -182,11 +182,10 @@
         private static IDataProvider SetTestBooks(long id)
         {
             IDataProvider library;
-            _mockData.Setup(data => data.SetBooks()).
-                       Returns(new List<Book> { new Book("Test", 1, 1) });
-            library = _mockData.Object;
-            _mockData.Setup(data => data.SetBooksAuthors()).
-                                Returns(new List<BookAuthorPair> { new BookAuthorPair(1, id) });
+            // Setting test data for mock to test correct deletion of an author
+            _mockData = new MockDataProvider().MockSetAuthors(_authors).
+                                               MockSetBooks(new List<Book> { new Book("Test", 100, 100) }).
+                                               MockSetBookAuthorPair(new List<BookAuthorPair> { new BookAuthorPair(1, id) });
             library = _mockData.Object;
             return library;
         }

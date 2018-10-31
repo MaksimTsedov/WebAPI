@@ -43,10 +43,32 @@
         /// Compares this instance to Book-Genre pair parameter.
         /// </summary>
         /// <param name="bookGenrePair">Book-Genre pair.</param>
-        /// <returns>Integer of comparison result.</returns>
+        /// <returns>
+        /// Integer of comparison result.
+        /// </returns>
+        // TODO: For correct sorting and adding, I realised that kind of comparator. Is it appropriate?
         public int CompareTo(BookGenrePair bookGenrePair)
         {
-            return Book_Id.CompareTo(bookGenrePair.Book_Id);
+            if (this.Book_Id > bookGenrePair.Book_Id)
+            {
+                return 1;
+            }
+            else if (this.Book_Id < bookGenrePair.Book_Id)
+            {
+                return -1;
+            }
+            else if (this.Genre_Id > bookGenrePair.Genre_Id)
+            {
+                return 1;
+            }
+            else if (this.Genre_Id < bookGenrePair.Genre_Id)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

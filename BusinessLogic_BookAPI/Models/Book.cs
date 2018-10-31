@@ -19,7 +19,7 @@
         /// <param name="author">The author.</param>
         /// <param name="numberOfPages">The number of pages.</param>
         /// <param name="year">The year.</param>
-        public Book(string title, int numberOfPages, int year)
+        public Book(string title, int numberOfPages, int? year)
         {
             this.Title = title;
             this.NumberOfPages = numberOfPages;
@@ -53,6 +53,7 @@
         /// <value>
         /// The number of pages.
         /// </value>
+        [Required(ErrorMessage = "Book should have its number of pages!")]
         [Range(1, 2500, ErrorMessage = "Book number of pages should be natural and be less 2500")]
         public int NumberOfPages { get; set; }
 
@@ -63,7 +64,7 @@
         /// The year.
         /// </value>
         [Range(-2000, 2018, ErrorMessage = "Wrong year parameter (never heard about books from that time)!")]
-        public int Year { get; set; }
+        public int? Year { get; set; }
 
         /// <summary>
         /// Clones the book information.

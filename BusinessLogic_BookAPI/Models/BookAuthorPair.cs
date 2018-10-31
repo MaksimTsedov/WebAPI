@@ -46,7 +46,26 @@
         /// <returns>Integer of comparison result.</returns>
         public int CompareTo(BookAuthorPair bookAuthorPair)
         {
-            return Book_Id.CompareTo(bookAuthorPair.Book_Id);
+            if (this.Book_Id > bookAuthorPair.Book_Id)
+            {
+                return 1;
+            }
+            else if (this.Book_Id < bookAuthorPair.Book_Id)
+            {
+                return -1;
+            }
+            else if (this.Author_Id > bookAuthorPair.Author_Id)
+            {
+                return 1;
+            }
+            else if (this.Author_Id < bookAuthorPair.Author_Id)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

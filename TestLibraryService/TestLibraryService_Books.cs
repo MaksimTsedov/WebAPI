@@ -185,17 +185,12 @@ namespace TestLibraryService
         private IDataProvider SetTestData(long id)
         {
             IDataProvider library;
-            _mockData.Setup(data => data.SetAuthors()).
-                       Returns(new List<Author> { new Author("Test", "Testcountry") });
-            library = _mockData.Object;
-            _mockData.Setup(data => data.SetBooksAuthors()).
-                                Returns(new List<BookAuthorPair> { new BookAuthorPair(id, 1) });
-            library = _mockData.Object;
-            _mockData.Setup(data => data.SetGenres()).
-                       Returns(new List<Genre> { new Genre("Test") });
-            library = _mockData.Object;
-            _mockData.Setup(data => data.SetBooksGenres()).
-                                Returns(new List<BookGenrePair> { new BookGenrePair(id, 1) });
+            // Setting test data for mock to test correct deletion of a book
+            _mockData = new MockDataProvider().MockSetBooks(_books).
+                                               MockSetAuthors(new List<Author> { new Author("Test", "Testcountry") }).
+                                               MockSetGenres(new List<Genre> { new Genre("Test") }).
+                                               MockSetBookAuthorPair(new List<BookAuthorPair> { new BookAuthorPair(id, 1) }).
+                                               MockSetBookGenrePair(new List<BookGenrePair> { new BookGenrePair(id, 1) });
             library = _mockData.Object;
             return library;
         }

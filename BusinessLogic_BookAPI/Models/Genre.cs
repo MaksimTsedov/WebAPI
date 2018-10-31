@@ -40,6 +40,7 @@
         /// </value>
         [Required(ErrorMessage = "Genre should have his name!")]
         [StringLength(50)]
+        [MinLength(2)]
         public string Naming { get; set; }
 
         /// <summary>
