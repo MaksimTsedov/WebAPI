@@ -12,12 +12,12 @@
     public class DataProvider : IDataProvider
     {
         /// <summary>
-        /// Sets the author enumeration.
+        /// Gets the author enumeration.
         /// </summary>
         /// <returns>
-        /// Setted enumeration of authors
+        /// Enumeration of authors
         /// </returns>
-        public IEnumerable<Author> SetAuthors()
+        public IEnumerable<Author> GetAuthors()
         {
             IEnumerable<Author> authors = new List<Author>
             {
@@ -25,19 +25,17 @@
                 new Author("George Orwell", "Great Britain"),
                 new Author("Homer", "Ancient Greece")
             };
-            foreach (var author in authors)
-            {
-                yield return author;
-            }
+
+            return authors;
         }
 
         /// <summary>
-        /// Sets book enumeration.
+        /// Gets book enumeration.
         /// </summary>
         /// <returns>
-        /// Setted enumeration of books
+        /// Enumeration of books
         /// </returns>
-        public IEnumerable<Book> SetBooks()
+        public IEnumerable<Book> GetBooks()
         {
             IEnumerable<Book> books = new List<Book>
             {
@@ -47,19 +45,17 @@
                 new Book("Dandelion wine", 164, 1957),
                 new Book("Folk tails", 160, 1890)
             };
-            foreach (var book in books)
-            {
-                yield return book;
-            }
+
+            return books;
         }
 
         /// <summary>
-        /// Sets links between books and authors.
+        /// Gets links between books and authors.
         /// </summary>
         /// <returns>
-        /// Setted enumeration of Book-Author pair
+        /// Enumeration of Book-Author pair
         /// </returns>
-        public IEnumerable<BookAuthorPair> SetBooksAuthors()
+        public IEnumerable<BookAuthorPair> GetBooksAuthors()
         {
 
             IEnumerable<BookAuthorPair> bookAuthorPairs = new List<BookAuthorPair>
@@ -69,19 +65,17 @@
                 new BookAuthorPair(3, 3),
                 new BookAuthorPair(4, 1)
             };
-            foreach (var pair in bookAuthorPairs)
-            {
-                yield return pair;
-            }
+
+            return bookAuthorPairs;
         }
 
         /// <summary>
-        /// Sets links between books and genres.
+        /// Gets links between books and genres.
         /// </summary>
         /// <returns>
-        /// Setted enumeration of Book-Genre pair
+        /// Enumeration of Book-Genre pair
         /// </returns>
-        public IEnumerable<BookGenrePair> SetBooksGenres()
+        public IEnumerable<BookGenrePair> GetBooksGenres()
         {
             IEnumerable<BookGenrePair> bookGenrePairs = new SortedSet<BookGenrePair>
             {
@@ -91,19 +85,17 @@
                 new BookGenrePair(3, 3),
                 new BookGenrePair(5, 4)
             };
-            foreach (var pair in bookGenrePairs)
-            {
-                yield return pair;
-            }
+
+            return bookGenrePairs;
         }
 
         /// <summary>
-        /// Sets the genre enumeration.
+        /// Gets the genre enumeration.
         /// </summary>
         /// <returns>
-        /// Setted enumeration of genres
+        /// Enumeration of genres
         /// </returns>
-        public IEnumerable<Genre> SetGenres()
+        public IEnumerable<Genre> GetGenres()
         {
             IEnumerable<Genre> genres = new List<Genre>
             {
@@ -112,10 +104,8 @@
                 new Genre("Epos"),
                 new Genre("Fairy tail")
             };
-            foreach (var genre in genres)
-            {
-                yield return genre;
-            }
+
+            return genres;
         }
     }
 }

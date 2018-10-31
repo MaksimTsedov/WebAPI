@@ -67,7 +67,7 @@
         {
             var library = _mockData.Object;
 
-            bool result = new LibraryService(library).AddGenreToBook(book_id: 2, genre_id: 2);
+            bool result = new LibraryServiceForObjects(library).AddGenreToBook(book_id: 2, genre_id: 2);
 
             Assert.IsTrue(result);
         }
@@ -83,7 +83,7 @@
         {
             var library = _mockData.Object;
 
-            bool result = new LibraryService(library).AddGenreToBook(book_id, genre_id);
+            bool result = new LibraryServiceForObjects(library).AddGenreToBook(book_id, genre_id);
 
             Assert.IsFalse(result);
         }
@@ -96,7 +96,7 @@
         {
             var library = _mockData.Object;
 
-            int result = new LibraryService(library).GetAllGenreBooks(genre_Id: 1).Count();
+            int result = new LibraryServiceForObjects(library).GetAllGenreBooks(genre_Id: 1).Count();
 
             Assert.IsTrue(result == 2);
         }
@@ -112,7 +112,7 @@
         {
             var library = _mockData.Object;
 
-            int result = new LibraryService(library).GetAllGenreBooks(genre_Id: id).Count();
+            int result = new LibraryServiceForObjects(library).GetAllGenreBooks(genre_Id: id).Count();
 
             Assert.IsTrue(result == 0);
         }

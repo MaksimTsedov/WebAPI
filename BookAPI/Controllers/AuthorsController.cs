@@ -128,7 +128,7 @@
         }
 
         /// <summary>
-        /// Gets a author the by identifier.
+        /// Gets an author by identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>HTTP result of operation execution.</returns>

@@ -4,52 +4,54 @@
     using System.Collections.Generic;
     using System.Linq;
     using BusinessLogic_BookAPI.Models;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Library manager
     /// </summary>
     /// <seealso cref="BusinessLogic_BookAPI.Services.ILibraryService" />
-    public class LibraryService : ILibraryService
+    public class LibraryServiceForDB : DbContext, ILibraryService
     {
         #region Initializing
 
         /// <summary>
         /// List of books
         /// </summary>
-        private List<Book> _books = new List<Book>();
+        private DbSet<Book> _Books { get; set; }
 
         /// <summary>
         /// List of authors
         /// </summary>
-        private List<Author> _authors = new List<Author>();
+        private DbSet<Author> _Authors { get; set; }
 
         /// <summary>
         /// List of genres
         /// </summary>
-        private List<Genre> _genres = new List<Genre>();
+        private DbSet<Genre> _Genres { get; set; }
 
         /// <summary>
         /// Sorted set of book-genre link
         /// </summary>
-        private SortedSet<BookGenrePair> _bookGenrePair
-            = new SortedSet<BookGenrePair>();
+        private DbSet<BookGenrePair> _BookGenrePair { get; set; }
 
         /// <summary>
         /// Sorted set of book-author pair
         /// </summary>
-        private SortedSet<BookAuthorPair> _bookAuthorPair
-            = new SortedSet<BookAuthorPair>();
+        private DbSet<BookAuthorPair> _BookAuthorPair { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LibraryService"/> class.
+        /// Initializes a new instance of the <see cref="LibraryServiceForObjects"/> class.
         /// </summary>
-        public LibraryService(IDataProvider data)
+        public LibraryServiceForDB(IDataProvider data, DbContextOptions<LibraryServiceForDB> options):
+            base (options)
         {
-            _books = data.SetBooks().ToList();
-            _authors = data.SetAuthors().ToList();
-            _genres = data.SetGenres().ToList();
-            _bookAuthorPair = new SortedSet<BookAuthorPair>(data.SetBooksAuthors());
-            _bookGenrePair = new SortedSet<BookGenrePair>(data.SetBooksGenres());
+            Database.EnsureCreated();
+            _Books.AddRange(data.SetBooks());
+            _Authors.AddRange(data.SetAuthors());
+            _Genres.AddRange(data.SetGenres());
+            _BookAuthorPair.AddRange(data.SetBooksAuthors());
+            _BookGenrePair.AddRange(data.SetBooksGenres());
+            this.SaveChanges();
         }
 
         #endregion
@@ -66,7 +68,8 @@
         /// </returns>
         public Author CreateAuthor(Author author)
         {
-            _authors.Add(author);
+            _Authors.Add(author);
+            this.SaveChanges();
             return author;
         }
 
@@ -79,7 +82,8 @@
         /// </returns>
         public Book CreateBook(Book book)
         {
-            _books.Add(book);
+            _Books.Add(book);
+            this.SaveChanges();
             return book;
         }
 
@@ -92,7 +96,8 @@
         /// </returns>
         public Genre CreateGenre(Genre genre)
         {
-            _genres.Add(genre);
+            _Genres.Add(genre);
+            this.SaveChanges();
             return genre;
         }
 
@@ -106,11 +111,13 @@
         {
             bool result = false;
 
-            if (GetBook(book_id) != null && _genres.Any((genre) => genre.Id == genre_id))
+            if (GetBook(book_id) != null && _Genres.Any((genre) => genre.Id == genre_id))
             {
-                result = _bookGenrePair.Add(new BookGenrePair(book_id, genre_id));
+                _BookGenrePair.Add(new BookGenrePair(book_id, genre_id));
+                result = true;
             }
 
+            this.SaveChanges();
             return result;
         }
 
@@ -125,9 +132,11 @@
             bool result = false;
             if (GetBook(book_id) != null && GetAuthor(author_id) != null)
             {
-                result = _bookAuthorPair.Add(new BookAuthorPair(book_id, author_id));
+                _BookAuthorPair.Add(new BookAuthorPair(book_id, author_id));
+                result = true;
             }
 
+            this.SaveChanges();
             return result;
         }
 
@@ -142,14 +151,19 @@
         /// <exception cref="ArgumentNullException">It is thrown if there is no author with such id.</exception>
         public void DeleteAuthor(long id)
         {
-            Author authorToDelete = _authors.FirstOrDefault((author) => author.Id == id);
+            Author authorToDelete = _Authors.FirstOrDefault((author) => author.Id == id);
             if (authorToDelete == null)
             {
                 throw new ArgumentNullException();
             }
 
-            _authors.Remove(authorToDelete);
-            _bookAuthorPair.RemoveWhere((bookAuthorPair) => bookAuthorPair.Author_Id == id);
+            this.SaveChanges();
+            _Authors.Remove(authorToDelete);
+            _BookAuthorPair.RemoveRange(from pair in _BookAuthorPair
+                                        where pair.Author_Id == id
+                                        select pair);
+
+            this.SaveChanges();
         }
 
         /// <summary>
@@ -159,15 +173,21 @@
         /// <exception cref="ArgumentNullException">It is thrown if there is no book with such id.</exception>
         public void DeleteBook(long id)
         {
-            Book bookToDelete = _books.FirstOrDefault((book) => book.Id == id);
+            Book bookToDelete = _Books.FirstOrDefault((book) => book.Id == id);
             if (bookToDelete == null)
             {
                 throw new ArgumentNullException();
             }
 
-            _books.Remove(bookToDelete);
-            _bookAuthorPair.RemoveWhere((bookAuthorPair) => bookAuthorPair.Author_Id == id);
-            _bookGenrePair.RemoveWhere((bookGenrePair) => bookGenrePair.Genre_Id == id);
+            _Books.Remove(bookToDelete);
+            _BookAuthorPair.RemoveRange(from pair in _BookAuthorPair
+                                        where pair.Author_Id == id
+                                        select pair);
+            _BookGenrePair.RemoveRange(from pair in _BookGenrePair
+                                       where pair.Genre_Id == id
+                                       select pair);
+
+            this.SaveChanges();
         }
 
         /// <summary>
@@ -178,18 +198,20 @@
         /// <exception cref="FormatException">It is thrown if there are exist books of this genre.</exception>
         public void DeleteGenre(long id)
         {
-            Genre genreToDelete = _genres.FirstOrDefault((genre) => genre.Id == id);
+            Genre genreToDelete = _Genres.FirstOrDefault((genre) => genre.Id == id);
             if (genreToDelete == null)
             {
                 throw new ArgumentNullException();
             }
 
-            if (_bookGenrePair.Any(bookGenrePair => bookGenrePair.Genre_Id == id))
+            if (_BookGenrePair.Any(bookGenrePair => bookGenrePair.Genre_Id == id))
             {
                 throw new FormatException(); //The condition for deleting genre is absence of books of this genre
             }
 
-            _genres.Remove(genreToDelete);
+            _Genres.Remove(genreToDelete);
+
+            this.SaveChanges();
         }
 
         #endregion
@@ -204,10 +226,11 @@
         /// </returns>
         public IEnumerable<Author> GetAllAuthors()
         {
-            foreach (var author in _authors)
+            foreach (var author in _Authors)
             {
                 yield return author;
             }
+
         }
 
         /// <summary>
@@ -218,7 +241,7 @@
         /// </returns>
         public IEnumerable<Book> GetAllBooks()
         {
-            foreach (var book in _books)
+            foreach (var book in _Books)
             {
                 yield return book;
             }
@@ -232,7 +255,7 @@
         /// </returns>
         public IEnumerable<Genre> GetAllGenres()
         {
-            foreach (var genre in _genres)
+            foreach (var genre in _Genres)
             {
                 yield return genre;
             }
@@ -251,7 +274,7 @@
         /// </returns>
         public Author GetAuthor(long id)
         {
-            return _authors.FirstOrDefault((author) => author.Id == id);
+            return _Authors.FirstOrDefault((author) => author.Id == id);
         }
 
         /// <summary>
@@ -261,7 +284,7 @@
         /// <returns>The chozen book.</returns>
         public Book GetBook(long id)
         {
-            return _books.FirstOrDefault((book) => book.Id == id);
+            return _Books.FirstOrDefault((book) => book.Id == id);
         }
 
         #endregion
@@ -278,12 +301,13 @@
         /// </returns>
         public Author UpdateAuthor(long id, Author author)
         {
-            Author authorToUpdate = _authors.FirstOrDefault((oldauthor) => oldauthor.Id == id);
+            Author authorToUpdate = _Authors.FirstOrDefault((oldauthor) => oldauthor.Id == id);
             if (authorToUpdate != null)
             {
                 authorToUpdate.Clone(author);
             }
 
+            this.SaveChanges();
             return authorToUpdate;
         }
 
@@ -297,12 +321,13 @@
         /// </returns>
         public Book UpdateBook(long id, Book book)
         {
-            Book bookToUpdate = _books.FirstOrDefault((oldbook) => oldbook.Id == id);
+            Book bookToUpdate = _Books.FirstOrDefault((oldbook) => oldbook.Id == id);
             if (bookToUpdate != null)
             {
                 bookToUpdate.Clone(book);
             }
 
+            this.SaveChanges();
             return bookToUpdate;
         }
 
@@ -317,9 +342,9 @@
         /// <returns>Enumeration of books.</returns>
         public IEnumerable<Book> GetAuthorBooks(long author_Id)
         {
-            foreach (var authorBook in _bookAuthorPair.Where(bookAuthorPair => bookAuthorPair.Author_Id == author_Id))
+            foreach (var authorBook in _BookAuthorPair.Where(bookAuthorPair => bookAuthorPair.Author_Id == author_Id))
             {
-                yield return _books.FirstOrDefault((book) => book.Id == authorBook.Book_Id);
+                yield return _Books.FirstOrDefault((book) => book.Id == authorBook.Book_Id);
             }
         }
 
@@ -330,9 +355,9 @@
         /// <returns>Enumeration of books.</returns>
         public IEnumerable<Book> GetAllGenreBooks(long genre_Id)
         {
-            foreach (var genreBook in _bookGenrePair.Where(bookGenrePair => bookGenrePair.Genre_Id == genre_Id))
+            foreach (var genreBook in _BookGenrePair.Where(bookGenrePair => bookGenrePair.Genre_Id == genre_Id))
             {
-                yield return _books.FirstOrDefault((book) => book.Id == genreBook.Book_Id);
+                yield return _Books.FirstOrDefault((book) => book.Id == genreBook.Book_Id);
             }
         }
 

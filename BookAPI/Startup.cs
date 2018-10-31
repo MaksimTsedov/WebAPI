@@ -16,7 +16,7 @@
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ILibraryService, LibraryService>();
+            services.AddSingleton<ILibraryService, LibraryServiceForObjects>();
             services.AddSingleton<IDataProvider, DataProvider>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSwaggerGen(c =>

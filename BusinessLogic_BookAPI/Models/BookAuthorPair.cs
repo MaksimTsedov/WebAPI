@@ -6,7 +6,7 @@
     /// <summary>
     /// Class for Book-Author pair
     /// </summary>
-    public class BookAuthorPair : IComparable<BookAuthorPair>
+    public class BookAuthorPair : IEquatable<BookAuthorPair>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BookAuthorPair"/> class.
@@ -40,32 +40,38 @@
         public long Author_Id { get; private set; }
 
         /// <summary>
-        /// Compares this instance to Book-Author pair parameter.
+        /// Returns a hash code for this instance.
         /// </summary>
-        /// <param name="bookAuthorPair">Book-Author pair.</param>
-        /// <returns>Integer of comparison result.</returns>
-        public int CompareTo(BookAuthorPair bookAuthorPair)
+        /// <returns>
+        /// A hash code for this instance, used in a hash table. 
+        /// </returns>
+        public override int GetHashCode()
         {
-            if (this.Book_Id > bookAuthorPair.Book_Id)
-            {
-                return 1;
-            }
-            else if (this.Book_Id < bookAuthorPair.Book_Id)
-            {
-                return -1;
-            }
-            else if (this.Author_Id > bookAuthorPair.Author_Id)
-            {
-                return 1;
-            }
-            else if (this.Author_Id < bookAuthorPair.Author_Id)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
+            return Book_Id.GetHashCode() + Author_Id.GetHashCode();
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            return obj is BookAuthorPair && Equals((BookAuthorPair)obj);
+        }
+
+        /// <summary>
+        /// Checks for equality
+        /// </summary>
+        /// <param name="bookAuthorPair">The book author pair.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="BookAuthorPair" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public bool Equals(BookAuthorPair bookAuthorPair)
+        {
+            return this.Book_Id == bookAuthorPair.Book_Id && this.Author_Id == bookAuthorPair.Author_Id;
         }
     }
 }

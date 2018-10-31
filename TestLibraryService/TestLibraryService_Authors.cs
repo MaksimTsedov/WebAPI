@@ -46,7 +46,7 @@
         {
             var library = _mockData.Object;
 
-            int result = new LibraryService(library).GetAllAuthors().Count();
+            int result = new LibraryServiceForObjects(library).GetAllAuthors().Count();
 
             Assert.IsTrue(result == 2);
         }
@@ -62,7 +62,7 @@
         {
             var library = _mockData.Object;
 
-            Author result = new LibraryService(library).GetAuthor(id);
+            Author result = new LibraryServiceForObjects(library).GetAuthor(id);
 
             Assert.IsNotNull(result);
         }
@@ -79,7 +79,7 @@
         {
             var library = _mockData.Object;
 
-            Author result = new LibraryService(library).GetAuthor(id);
+            Author result = new LibraryServiceForObjects(library).GetAuthor(id);
 
             Assert.IsNull(result);
         }
@@ -96,7 +96,7 @@
         {
             var library = _mockData.Object;
 
-            Author result = new LibraryService(library).CreateAuthor(new Author(fullname, country));
+            Author result = new LibraryServiceForObjects(library).CreateAuthor(new Author(fullname, country));
 
             Assert.AreEqual(result, new Author(fullname, country));
         }
@@ -114,7 +114,7 @@
         {
             var library = _mockData.Object;
 
-            Author result = new LibraryService(library).UpdateAuthor(id, new Author(fullname, country));
+            Author result = new LibraryServiceForObjects(library).UpdateAuthor(id, new Author(fullname, country));
 
             Assert.AreEqual(result, new Author(fullname, country));
         }
@@ -132,7 +132,7 @@
         {
             var library = _mockData.Object;
 
-            Author result = new LibraryService(library).UpdateAuthor(id, new Author(fullname, country));
+            Author result = new LibraryServiceForObjects(library).UpdateAuthor(id, new Author(fullname, country));
 
             Assert.IsNull(result);
         }
@@ -149,7 +149,7 @@
             var library = _mockData.Object;
             library = SetTestBooks(id);
 
-            ILibraryService result = new LibraryService(library);
+            ILibraryService result = new LibraryServiceForObjects(library);
 
             result.DeleteAuthor(id);
 
@@ -170,7 +170,7 @@
         {
             var library = _mockData.Object;
 
-            ILibraryService result = new LibraryService(library);
+            ILibraryService result = new LibraryServiceForObjects(library);
             result.DeleteAuthor(id);
         }
 
@@ -181,13 +181,11 @@
         /// <returns>Test data.</returns>
         private static IDataProvider SetTestBooks(long id)
         {
-            IDataProvider library;
             // Setting test data for mock to test correct deletion of an author
             _mockData = new MockDataProvider().MockSetAuthors(_authors).
                                                MockSetBooks(new List<Book> { new Book("Test", 100, 100) }).
                                                MockSetBookAuthorPair(new List<BookAuthorPair> { new BookAuthorPair(1, id) });
-            library = _mockData.Object;
-            return library;
+            return _mockData.Object;
         }
     }
 }

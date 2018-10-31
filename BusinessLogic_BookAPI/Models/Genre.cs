@@ -52,8 +52,8 @@
         /// </returns>
         public override bool Equals(object genre)
         {
-            Genre newgenre = genre as Genre;
-            if (this.Naming == newgenre.Naming)
+            Genre genreToCompare = genre as Genre;
+            if (this.Naming == genreToCompare.Naming)
             {
                 return true;
             }

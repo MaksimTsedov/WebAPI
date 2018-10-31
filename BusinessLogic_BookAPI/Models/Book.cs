@@ -15,8 +15,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Book"/> class.
         /// </summary>
-        /// <param name="title">The title.</param>
-        /// <param name="author">The author.</param>
+        /// <param name="title">The title of a book.</param>
         /// <param name="numberOfPages">The number of pages.</param>
         /// <param name="year">The year.</param>
         public Book(string title, int numberOfPages, int? year)
@@ -86,10 +85,10 @@
         /// </returns>
         public override bool Equals(object book)
         {
-            Book newbook = book as Book;
-            if (this.Title == newbook.Title
-             && this.NumberOfPages == newbook.NumberOfPages
-             && this.Year == newbook.Year)
+            Book bookToCompare = book as Book;
+            if (this.Title == bookToCompare.Title
+             && this.NumberOfPages == bookToCompare.NumberOfPages
+             && this.Year == bookToCompare.Year)
             {
                 return true;
             }

@@ -11,31 +11,31 @@
     {
         public MockDataProvider MockSetAuthors(List<Author> authors)
         {
-            Setup(lib => lib.SetAuthors()).Returns(authors);
+            Setup(lib => lib.GetAuthors()).Returns(authors);
             return this;
         }
 
         public MockDataProvider MockSetBooks(List<Book> books)
         {
-            Setup(lib => lib.SetBooks()).Returns(books);
+            Setup(lib => lib.GetBooks()).Returns(books);
             return this;
         }
 
         public MockDataProvider MockSetGenres(List<Genre> genres)
         {
-            Setup(lib => lib.SetGenres()).Returns(genres);
+            Setup(lib => lib.GetGenres()).Returns(genres);
             return this;
         }
 
         public MockDataProvider MockSetBookAuthorPair(List<BookAuthorPair> bookAuthorPair)
         {
-            Setup(lib => lib.SetBooksAuthors()).Returns(bookAuthorPair);
+            Setup(lib => lib.GetBooksAuthors()).Returns(bookAuthorPair);
             return this;
         }
 
         public MockDataProvider MockSetBookGenrePair(List<BookGenrePair> bookGenrePairs)
         {
-            Setup(lib => lib.SetBooksGenres()).Returns(bookGenrePairs);
+            Setup(lib => lib.GetBooksGenres()).Returns(bookGenrePairs);
             return this;
         }
     }

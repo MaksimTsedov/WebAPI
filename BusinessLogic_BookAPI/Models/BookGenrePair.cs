@@ -6,7 +6,7 @@
     /// <summary>
     /// Class for Book-Genre pair
     /// </summary>
-    public class BookGenrePair : IComparable<BookGenrePair>
+    public class BookGenrePair : IEquatable<BookGenrePair>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BookGenrePair"/> class.
@@ -40,35 +40,38 @@
         public long Genre_Id { get; private set; }
 
         /// <summary>
-        /// Compares this instance to Book-Genre pair parameter.
+        /// Returns a hash code for this instance.
         /// </summary>
-        /// <param name="bookGenrePair">Book-Genre pair.</param>
         /// <returns>
-        /// Integer of comparison result.
+        /// A hash code for this instance, used in a hash table. 
         /// </returns>
-        // TODO: For correct sorting and adding, I realised that kind of comparator. Is it appropriate?
-        public int CompareTo(BookGenrePair bookGenrePair)
+        public override int GetHashCode()
         {
-            if (this.Book_Id > bookGenrePair.Book_Id)
-            {
-                return 1;
-            }
-            else if (this.Book_Id < bookGenrePair.Book_Id)
-            {
-                return -1;
-            }
-            else if (this.Genre_Id > bookGenrePair.Genre_Id)
-            {
-                return 1;
-            }
-            else if (this.Genre_Id < bookGenrePair.Genre_Id)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
+            return Book_Id.GetHashCode() + Genre_Id.GetHashCode();
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            return obj is BookGenrePair && Equals((BookGenrePair)obj);
+        }
+
+        /// <summary>
+        /// Checks for equality
+        /// </summary>
+        /// <param name="bookAuthorPair">The book genre pair.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="BookGenrePair" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public bool Equals(BookGenrePair bookGenrePair)
+        {
+            return this.Book_Id == bookGenrePair.Book_Id && this.Genre_Id == bookGenrePair.Genre_Id;
         }
     }
 }

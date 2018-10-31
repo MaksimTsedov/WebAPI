@@ -9,24 +9,8 @@
     /// <seealso cref="BusinessLogic_BookAPI.Services.IAuthorService" />
     /// <seealso cref="BusinessLogic_BookAPI.Services.IBookShelf" />
     /// <seealso cref="BusinessLogic_BookAPI.Services.IGenreService" />  
-    public interface ILibraryService : IAuthorService, IBookShelf, IGenreService
+    public interface ILibraryService : ILibraryPairCreationManager, IAuthorService, IBookShelf, IGenreService
     {
-        /// <summary>
-        /// Adds the genre to book.
-        /// </summary>
-        /// <param name="book_id">The book identifier.</param>
-        /// <param name="genre_id">The genre identifier.</param>
-        /// <returns>Is added new link.</returns>
-        bool AddGenreToBook(long book_id, long genre_id);
-
-        /// <summary>
-        /// Adds the author of book.
-        /// </summary>
-        /// <param name="book_id">The book identifier.</param>
-        /// <param name="author_id">The author identifier.</param>
-        /// <returns>Is added new link.</returns>
-        bool AddAuthorOfBook(long book_id, long author_id);
-
         /// <summary>
         /// Gets list of authors.
         /// </summary>

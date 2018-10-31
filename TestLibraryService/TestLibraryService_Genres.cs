@@ -35,6 +35,7 @@
                 new Genre("Test1"),
                 new Genre("Test2")
             };
+
             _mockData = new MockDataProvider().MockSetGenres(_genres);
         }
 
@@ -46,7 +47,7 @@
         {
             var library = _mockData.Object;
 
-            int result = new LibraryService(library).GetAllGenres().Count();
+            int result = new LibraryServiceForObjects(library).GetAllGenres().Count();
 
             Assert.IsTrue(result == 2);
         }
@@ -62,7 +63,7 @@
         {
             var library = _mockData.Object;
 
-            Genre result = new LibraryService(library).CreateGenre(new Genre(naming));
+            Genre result = new LibraryServiceForObjects(library).CreateGenre(new Genre(naming));
 
             Assert.AreEqual(result, new Genre(naming));
         }
@@ -77,7 +78,7 @@
         public void TestDeleteGenre_Correct(long id)
         {
             var library = _mockData.Object;
-            ILibraryService result = new LibraryService(library);
+            ILibraryService result = new LibraryServiceForObjects(library);
 
             result.DeleteGenre(id);
 
@@ -96,7 +97,7 @@
         {
             var library = _mockData.Object;
             library = SetTestBooks(id);
-            ILibraryService result = new LibraryService(library);
+            ILibraryService result = new LibraryServiceForObjects(library);
 
             result.DeleteGenre(id);
         }
@@ -113,7 +114,7 @@
         public void TestDeleteAuthor_ArgumentNullExceptionThrow(long id)
         {
             var library = _mockData.Object;
-            ILibraryService result = new LibraryService(library);
+            ILibraryService result = new LibraryServiceForObjects(library);
 
             result.DeleteAuthor(id);
         }
@@ -125,14 +126,11 @@
         /// <returns>Test data.</returns>
         private static IDataProvider SetTestBooks(long id)
         {
-            IDataProvider library;
-            _mockData.Setup(data => data.SetBooks()).
-                       Returns(new List<Book> { new Book("Test", 1, 1) });
-            library = _mockData.Object;
-            _mockData.Setup(data => data.SetBooksGenres()).
-                                Returns(new List<BookGenrePair> { new BookGenrePair(1, id) });
-            library = _mockData.Object;
-            return library;
+            // Setting test data for mock to test correct deletion of an author
+            _mockData = new MockDataProvider().MockSetGenres(_genres).
+                                               MockSetBooks(new List<Book> { new Book("Test", 1, 1) }).
+                                               MockSetBookGenrePair(new List<BookGenrePair> { new BookGenrePair(1, id) });
+            return _mockData.Object;
         }
     }
 }

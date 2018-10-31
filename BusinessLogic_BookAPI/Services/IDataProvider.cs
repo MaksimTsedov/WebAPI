@@ -10,33 +10,33 @@
     public interface IDataProvider
     {
         /// <summary>
-        /// Sets book enumeration.
+        /// Gets book enumeration.
         /// </summary>
-        /// <returns>Setted enumeration of books</returns>
-        IEnumerable<Book> SetBooks();
+        /// <returns>Enumeration of books</returns>
+        IEnumerable<Book> GetBooks();
 
         /// <summary>
-        /// Sets the author enumeration.
+        /// Gets the author enumeration.
         /// </summary>
-        /// <returns>Setted enumeration of authors</returns>
-        IEnumerable<Author> SetAuthors();
+        /// <returns>Enumeration of authors</returns>
+        IEnumerable<Author> GetAuthors();
 
         /// <summary>
-        /// Sets the genre enumeration.
+        /// Gets the genre enumeration.
         /// </summary>
-        /// <returns>Setted enumeration of genres</returns>
-        IEnumerable<Genre> SetGenres();
+        /// <returns>Enumeration of genres</returns>
+        IEnumerable<Genre> GetGenres();
 
         /// <summary>
-        /// Sets links between books and authors.
+        /// Gets links between books and authors.
         /// </summary>
-        /// <returns>Setted enumeration of Book-Author pair</returns>
-        IEnumerable<BookAuthorPair> SetBooksAuthors();
+        /// <returns>Enumeration of Book-Author pair</returns>
+        IEnumerable<BookAuthorPair> GetBooksAuthors();
 
         /// <summary>
-        /// Sets links between books and genres.
+        /// Gets links between books and genres.
         /// </summary>
-        /// <returns>Setted enumeration of Book-Genre pair</returns>
-        IEnumerable<BookGenrePair> SetBooksGenres();
+        /// <returns>Enumeration of Book-Genre pair</returns>
+        IEnumerable<BookGenrePair> GetBooksGenres();
     }
 }
