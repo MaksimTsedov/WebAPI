@@ -6,36 +6,37 @@
     using BusinessLogic_BookAPI.Models;
 
     /// <summary>
-    /// Library manager
+    /// Library manager.
     /// </summary>
     /// <seealso cref="BusinessLogic_BookAPI.Services.ILibraryService" />
-    public class LibraryServiceForObjects : ILibraryService
+    public class LibraryServiceForObjects : ILibraryService, ILibraryPairCreationManager,
+                                            IBookShelf, IAuthorService, IGenreService
     {
         #region Initializing
 
         /// <summary>
-        /// List of books
+        /// List of books.
         /// </summary>
         private List<Book> _books = new List<Book>();
 
         /// <summary>
-        /// List of authors
+        /// List of authors.
         /// </summary>
         private List<Author> _authors = new List<Author>();
 
         /// <summary>
-        /// List of genres
+        /// List of genres.
         /// </summary>
         private List<Genre> _genres = new List<Genre>();
 
         /// <summary>
-        /// Set of book-genre link
+        /// Set of book-genre link.
         /// </summary>
         private HashSet<BookGenrePair> _bookGenrePair
             = new HashSet<BookGenrePair>();
 
         /// <summary>
-        /// Set of book-author pair
+        /// Set of book-author pair.
         /// </summary>
         private HashSet<BookAuthorPair> _bookAuthorPair
             = new HashSet<BookAuthorPair>();
@@ -105,7 +106,7 @@
         public bool AddGenreToBook(long book_id, long genre_id)
         {
             bool result = false;
-            if (GetBook(book_id) != null && _genres.Any((genre) => genre.Id == genre_id))
+            if (GetBook(book_id) != null && GetGenre(genre_id) != null)
             {
                 result = _bookGenrePair.Add(new BookGenrePair(book_id, genre_id));
             }
@@ -193,6 +194,45 @@
             }          
         }
 
+        /// <summary>
+        /// Deletes the genre of a book.
+        /// </summary>
+        /// <param name="book_id">The book identifier.</param>
+        /// <param name="genre_id">The genre identifier.</param>
+        /// <returns>Is deleted.</returns>
+        public bool DeleteGenreOfBook(long book_id, long genre_id)
+        {
+            bool result = false;
+            BookGenrePair bookGenrePair = _bookGenrePair.FirstOrDefault((pair) => pair.Book_Id == book_id
+                                                                          && pair.Genre_Id == genre_id);
+            if (bookGenrePair!=null)
+            {
+                result = _bookGenrePair.Remove(bookGenrePair);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Deletes the author of book.
+        /// </summary>
+        /// <param name="book_id">The book identifier.</param>
+        /// <param name="author_id">The author identifier.</param>
+        /// <returns>Is deleted.</returns>
+        public bool RemoveAuthorOfBook(long book_id, long author_id)
+        {
+            bool result = false;
+            BookAuthorPair bookAuthorPair = _bookAuthorPair.FirstOrDefault((pair) => pair.Book_Id == book_id
+                                                                          && pair.Author_Id == author_id);
+            if (bookAuthorPair != null)
+            {
+                result = _bookAuthorPair.Remove(bookAuthorPair);
+            }
+
+            return result;
+        }
+         
+
         #endregion
 
         #region Getting all entities
@@ -256,6 +296,18 @@
             return _books.FirstOrDefault((book) => book.Id == id);
         }
 
+        /// <summary>
+        /// Gets the genre.
+        /// </summary>
+        /// <param name="id">The identifier of genre.</param>
+        /// <returns>
+        /// Genre.
+        /// </returns>
+        public Genre GetGenre(long id)
+        {
+            return _genres.FirstOrDefault((genre) => genre.Id == id);
+        }
+
         #endregion
 
         #region Updating
@@ -270,7 +322,7 @@
         /// </returns>
         public Author UpdateAuthor(long id, Author author)
         {
-            Author authorToUpdate = _authors.FirstOrDefault((oldauthor) => oldauthor.Id == id);
+            Author authorToUpdate = _authors.FirstOrDefault((oldAuthor) => oldAuthor.Id == id);
             if (authorToUpdate != null)
             {
                 authorToUpdate.Clone(author);
@@ -289,13 +341,53 @@
         /// </returns>
         public Book UpdateBook(long id, Book book)
         {
-            Book bookToUpdate = _books.FirstOrDefault((oldbook) => oldbook.Id == id);
+            Book bookToUpdate = _books.FirstOrDefault((oldBook) => oldBook.Id == id);
             if (bookToUpdate != null)
             {
                 bookToUpdate.Clone(book);
             }
 
             return bookToUpdate;
+        }
+
+        /// <summary>
+        /// Updates the genre of a book.
+        /// </summary>
+        /// <param name="book_id">The book identifier.</param>
+        /// <param name="genre_id">The genre identifier.</param>
+        /// <returns>Is updated.</returns>
+        bool UpdateGenreOfBook(long book_id, long genre_id, long newGenre_id)
+        {
+            bool result = false;
+            BookGenrePair bookGenrePair = _bookGenrePair.First((pair) => pair.Book_Id == book_id
+                                                                      && pair.Genre_Id == genre_id);
+            if (bookGenrePair != null && GetGenre(newGenre_id) != null)
+            {
+                bookGenrePair.ChangeGenre(newGenre_id);
+                result = true;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Updates the author of book.
+        /// </summary>
+        /// <param name="book_id">The book identifier.</param>
+        /// <param name="author_id">The author identifier.</param>
+        /// <returns>Is updated.</returns>
+        bool UpdateAuthorOfBook(long book_id, long author_id, long newAuthor_id)
+        {
+            bool result = false;
+            BookAuthorPair bookAuthorPair = _bookAuthorPair.First((pair) => pair.Book_Id == book_id
+                                                                      && pair.Author_Id == author_id);
+            if (bookAuthorPair != null && GetAuthor(newAuthor_id) != null)
+            {
+                bookAuthorPair.ChangeAuthor(newAuthor_id);
+                result = true;
+            }
+
+            return result;
         }
 
         #endregion

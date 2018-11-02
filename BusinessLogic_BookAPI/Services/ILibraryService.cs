@@ -9,7 +9,7 @@
     /// <seealso cref="BusinessLogic_BookAPI.Services.IAuthorService" />
     /// <seealso cref="BusinessLogic_BookAPI.Services.IBookShelf" />
     /// <seealso cref="BusinessLogic_BookAPI.Services.IGenreService" />  
-    public interface ILibraryService : ILibraryPairCreationManager, IAuthorService, IBookShelf, IGenreService
+    public interface ILibraryService
     {
         /// <summary>
         /// Gets list of authors.

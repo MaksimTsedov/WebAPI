@@ -47,7 +47,7 @@ namespace TestLibraryService
         {
             var library = _mockData.Object;
 
-            int result = new LibraryServiceForObjects(library).GetAllBooks().Count();
+            int result = new LibraryObjectService(library).GetAllBooks().Count();
 
             Assert.IsTrue(result == 2);
         }
@@ -63,7 +63,7 @@ namespace TestLibraryService
         {
             var library = _mockData.Object;
 
-            Book result = new LibraryServiceForObjects(library).GetBook(id);
+            Book result = new LibraryObjectService(library).GetBook(id);
 
             Assert.IsNotNull(result);
         }
@@ -80,7 +80,7 @@ namespace TestLibraryService
         {
             var library = _mockData.Object;
 
-            Book result = new LibraryServiceForObjects(library).GetBook(id);
+            Book result = new LibraryObjectService(library).GetBook(id);
 
             Assert.IsNull(result);
         }
@@ -98,7 +98,7 @@ namespace TestLibraryService
         {
             var library = _mockData.Object;
 
-            Book result = new LibraryServiceForObjects(library).CreateBook(new Book(title, numberOfPages, year));
+            Book result = new LibraryObjectService(library).CreateBook(new Book(title, numberOfPages, year));
 
             Assert.AreEqual(result, new Book(title, numberOfPages, year));
         }
@@ -117,7 +117,7 @@ namespace TestLibraryService
         {
             var library = _mockData.Object;
 
-            Book result = new LibraryServiceForObjects(library).UpdateBook(id, new Book(title, numberOfPages, year));
+            Book result = new LibraryObjectService(library).UpdateBook(id, new Book(title, numberOfPages, year));
 
             Assert.AreEqual(result, new Book(title, numberOfPages, year));
         }
@@ -136,7 +136,7 @@ namespace TestLibraryService
         {
             var library = _mockData.Object;
 
-            Book result = new LibraryServiceForObjects(library).UpdateBook(id, new Book(title, numberOfPages, year));
+            Book result = new LibraryObjectService(library).UpdateBook(id, new Book(title, numberOfPages, year));
 
             Assert.IsNull(result);
         }
@@ -152,7 +152,7 @@ namespace TestLibraryService
         {
             var library = _mockData.Object;
             library = SetTestData(id);
-            ILibraryService result = new LibraryServiceForObjects(library);
+            ILibraryService result = new LibraryObjectService(library);
 
             result.DeleteBook(id);
 
@@ -174,7 +174,7 @@ namespace TestLibraryService
         {
             var library = _mockData.Object;
 
-            ILibraryService result = new LibraryServiceForObjects(library);
+            ILibraryService result = new LibraryObjectService(library);
             result.DeleteBook(id);
         }
 

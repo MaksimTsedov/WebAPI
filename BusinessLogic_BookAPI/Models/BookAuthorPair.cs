@@ -40,6 +40,15 @@
         public long Author_Id { get; private set; }
 
         /// <summary>
+        /// Changes author for this instance of Book-Author pair.
+        /// </summary>
+        /// <param name="book">New author id.</param>
+        public void ChangeAuthor(long author_id)
+        {
+            this.Author_Id = author_id;
+        }
+
+        /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>

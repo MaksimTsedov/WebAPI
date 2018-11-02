@@ -40,6 +40,15 @@
         public long Genre_Id { get; private set; }
 
         /// <summary>
+        /// Changes genre for this instance of Book-Genre pair.
+        /// </summary>
+        /// <param name="book">New genre id.</param>
+        public void ChangeGenre(long genre_id)
+        {
+            this.Genre_Id = genre_id;
+        }
+
+        /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>

@@ -47,7 +47,7 @@
         {
             var library = _mockData.Object;
 
-            int result = new LibraryServiceForObjects(library).GetAllGenres().Count();
+            int result = new LibraryObjectService(library).GetAllGenres().Count();
 
             Assert.IsTrue(result == 2);
         }
@@ -63,7 +63,7 @@
         {
             var library = _mockData.Object;
 
-            Genre result = new LibraryServiceForObjects(library).CreateGenre(new Genre(naming));
+            Genre result = new LibraryObjectService(library).CreateGenre(new Genre(naming));
 
             Assert.AreEqual(result, new Genre(naming));
         }
@@ -78,7 +78,7 @@
         public void TestDeleteGenre_Correct(long id)
         {
             var library = _mockData.Object;
-            ILibraryService result = new LibraryServiceForObjects(library);
+            ILibraryService result = new LibraryObjectService(library);
 
             result.DeleteGenre(id);
 
@@ -97,7 +97,7 @@
         {
             var library = _mockData.Object;
             library = SetTestBooks(id);
-            ILibraryService result = new LibraryServiceForObjects(library);
+            ILibraryService result = new LibraryObjectService(library);
 
             result.DeleteGenre(id);
         }
@@ -114,7 +114,7 @@
         public void TestDeleteAuthor_ArgumentNullExceptionThrow(long id)
         {
             var library = _mockData.Object;
-            ILibraryService result = new LibraryServiceForObjects(library);
+            ILibraryService result = new LibraryObjectService(library);
 
             result.DeleteAuthor(id);
         }

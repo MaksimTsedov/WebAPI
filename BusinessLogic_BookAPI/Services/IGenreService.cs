@@ -15,6 +15,13 @@
         Genre CreateGenre(Genre genre);
 
         /// <summary>
+        /// Gets the genre.
+        /// </summary>
+        /// <param name="id">The identifier of genre.</param>
+        /// <returns>Genre.</returns>
+        Genre GetGenre(long id);
+
+        /// <summary>
         /// Deletes a genre by its id.
         /// </summary>
         /// <param name="id">The identifier.</param>
