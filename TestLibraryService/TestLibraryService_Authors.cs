@@ -35,7 +35,6 @@
                 new Author("Test1","Testcountry1"),
                 new Author("Test2","Testcountry2")
             };
-            _mockData = new MockDataProvider().MockSetAuthors(_authors);
         }
 
         /// <summary>
@@ -44,7 +43,7 @@
         [TestMethod]
         public void TestGetAuthors()
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetAuthors(_authors).Object;
 
             int result = new LibraryObjectService(library).GetAllAuthors().Count();
 
@@ -60,7 +59,7 @@
         [DataRow(2)]
         public void TestGetAuthor_Correct(long id)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetAuthors(_authors).Object;
 
             Author result = new LibraryObjectService(library).GetAuthor(id);
 
@@ -77,7 +76,7 @@
         [DataRow(0)]
         public void TestGetAuthor_InCorrect(long id)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetAuthors(_authors).Object;
 
             Author result = new LibraryObjectService(library).GetAuthor(id);
 
@@ -94,7 +93,7 @@
         [DataRow("Hello", "Ukraine")]
         public void TestAddAuthor_Correct(string fullname, string country)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetAuthors(_authors).Object;
 
             Author result = new LibraryObjectService(library).CreateAuthor(new Author(fullname, country));
 
@@ -112,7 +111,7 @@
         [DataRow(2, "Testing2", "Ukraine")]
         public void TestUpdateAuthor_Correct(long id, string fullname, string country)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetAuthors(_authors).Object;
 
             Author result = new LibraryObjectService(library).UpdateAuthor(id, new Author(fullname, country));
 
@@ -130,7 +129,7 @@
         [DataRow(-1, "TestingWronginRome", "Rome")]
         public void TestUpdateAuthor_InCorrect(long id, string fullname, string country)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetAuthors(_authors).Object;
 
             Author result = new LibraryObjectService(library).UpdateAuthor(id, new Author(fullname, country));
 
@@ -146,10 +145,9 @@
         [DataRow(1)]
         public void TestDeleteAuthor_Correct(long id)
         {
-            var library = _mockData.Object;
-            library = SetTestBooks(id);
+            var library = SetTestBooks(id);
 
-            ILibraryService result = new LibraryObjectService(library);
+            var result = new LibraryObjectService(library);
 
             result.DeleteAuthor(id);
 
@@ -168,9 +166,9 @@
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestDeleteAuthor_ArgumentNullExceptionThrow(long id)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetAuthors(_authors).Object;
 
-            ILibraryService result = new LibraryObjectService(library);
+            var result = new LibraryObjectService(library);
             result.DeleteAuthor(id);
         }
 

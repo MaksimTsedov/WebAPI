@@ -54,9 +54,6 @@
                 new BookAuthorPair(1, 1),
                 new BookAuthorPair(2, 1)
             };
-
-            _mockData = new MockDataProvider().MockSetAuthors(_authors).MockSetBooks(_books).MockSetBookAuthorPair(_bookAuthorPairs);
-
         }
 
         /// <summary>
@@ -65,7 +62,9 @@
         [TestMethod]
         public void TestAddAuthorOfBook_Correct()
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetAuthors(_authors).
+                                                 MockSetBooks(_books).
+                                                 MockSetBookAuthorPair(_bookAuthorPairs).Object;
 
             bool result = new LibraryObjectService(library).AddAuthorOfBook(book_id: 2, author_id: 2);
 
@@ -81,7 +80,9 @@
         [DataRow(0, -2)]
         public void TestAddAuthorOfBook_InCorrect(long book_id, long author_id)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetAuthors(_authors).
+                                                             MockSetBooks(_books).
+                                                             MockSetBookAuthorPair(_bookAuthorPairs).Object;
 
             bool result = new LibraryObjectService(library).AddAuthorOfBook(book_id, author_id);
 
@@ -94,8 +95,9 @@
         [TestMethod]
         public void TestGetAuthorBooks_Correct()
         {
-            var library = _mockData.Object;
-
+            var library = new MockDataProvider().MockSetAuthors(_authors).
+                                                             MockSetBooks(_books).
+                                                             MockSetBookAuthorPair(_bookAuthorPairs).Object;
             int result = new LibraryObjectService(library).GetAuthorBooks(author_Id: 1).Count();
 
             Assert.IsTrue(result == 2);
@@ -110,8 +112,9 @@
         [DataRow(0)]
         public void TestGetAuthorBooks_InCorrect(long id)
         {
-            var library = _mockData.Object;
-
+            var library = new MockDataProvider().MockSetAuthors(_authors).
+                                                             MockSetBooks(_books).
+                                                             MockSetBookAuthorPair(_bookAuthorPairs).Object;
             int result = new LibraryObjectService(library).GetAuthorBooks(author_Id: id).Count();
 
             Assert.IsTrue(result == 0);

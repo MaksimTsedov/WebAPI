@@ -18,15 +18,21 @@
         /// <summary>
         /// The interface reference for DI inverse
         /// </summary>
-        private readonly ILibraryService _genres;
+        private readonly IGenreService _genres;
+
+        /// <summary>
+        /// The interface reference of library for DI inverse
+        /// </summary>
+        private readonly ILibraryService _libraryService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenresController"/> class.
         /// </summary>
         /// <param name="genres">The instance of genres.</param>
-        public GenresController(ILibraryService genres)
+        public GenresController(IGenreService genres, ILibraryService library)
         {
             _genres = genres;
+            _libraryService = library;
         }
 
         /// <summary>
@@ -82,7 +88,7 @@
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<Genre> genreList = _genres.GetAllGenres().ToList();
+            List<Genre> genreList = _libraryService.GetAllGenres().ToList();
             if (genreList.Count == 0)
             {
                 return NotFound("Any genre are not recorded!");
@@ -99,13 +105,30 @@
         [HttpGet("{id}/books")]
         public IActionResult GetBooksOfGenre(long id)
         {
-            List<Book> books = _genres.GetAllGenreBooks(id).ToList();
+            List<Book> books = _libraryService.GetAllGenreBooks(id).ToList();
             if (books.Count == 0)
             {
                 return NotFound("There is no book of this genre!");
             }
 
             return Ok(books);
+        }
+
+        /// <summary>
+        /// Gets a genre by identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>HTTP result of operation execution.</returns>
+        [HttpGet("{id}")]
+        public IActionResult GetById(long id)
+        {
+            Genre genreToFind = _genres.GetGenre(id);
+            if (genreToFind == null)
+            {
+                return NotFound("No genre with such id!");
+            }
+
+            return Ok(genreToFind);
         }
     }
 }

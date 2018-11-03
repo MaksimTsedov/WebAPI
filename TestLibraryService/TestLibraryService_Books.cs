@@ -35,8 +35,6 @@ namespace TestLibraryService
                 new Book("Test1", 100, 100),
                 new Book("Test2", 21, -100)
             };
-
-            _mockData = new MockDataProvider().MockSetBooks(_books);
         }
 
         /// <summary>
@@ -45,7 +43,7 @@ namespace TestLibraryService
         [TestMethod]
         public void TestGetBooks()
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetBooks(_books).Object;
 
             int result = new LibraryObjectService(library).GetAllBooks().Count();
 
@@ -61,7 +59,7 @@ namespace TestLibraryService
         [DataRow(2)]
         public void TestGetBook_Correct(long id)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetBooks(_books).Object;
 
             Book result = new LibraryObjectService(library).GetBook(id);
 
@@ -78,7 +76,7 @@ namespace TestLibraryService
         [DataRow(0)]
         public void TestGetBook_InCorrect(long id)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetBooks(_books).Object;
 
             Book result = new LibraryObjectService(library).GetBook(id);
 
@@ -96,7 +94,7 @@ namespace TestLibraryService
         [DataRow("new test", 20, 100)]
         public void TestAddBook_Correct(string title, int numberOfPages, int year)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetBooks(_books).Object;
 
             Book result = new LibraryObjectService(library).CreateBook(new Book(title, numberOfPages, year));
 
@@ -115,7 +113,7 @@ namespace TestLibraryService
         [DataRow(2, "new test", 20, 100)]
         public void TestUpdateBook_Correct(long id, string title, int numberOfPages, int year)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetBooks(_books).Object;
 
             Book result = new LibraryObjectService(library).UpdateBook(id, new Book(title, numberOfPages, year));
 
@@ -134,7 +132,7 @@ namespace TestLibraryService
         [DataRow(-1, "new test", 20, 100)]
         public void TestUpdateBook_InCorrect(long id, string title, int numberOfPages, int year)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetBooks(_books).Object;
 
             Book result = new LibraryObjectService(library).UpdateBook(id, new Book(title, numberOfPages, year));
 
@@ -150,9 +148,8 @@ namespace TestLibraryService
         [DataRow(1)]
         public void TestDeleteBook_Correct(long id)
         {
-            var library = _mockData.Object;
-            library = SetTestData(id);
-            ILibraryService result = new LibraryObjectService(library);
+            var library = SetTestData(id);
+            var result = new LibraryObjectService(library);
 
             result.DeleteBook(id);
 
@@ -172,9 +169,9 @@ namespace TestLibraryService
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestDeleteBook_ArgumentNullExceptionThrow(long id)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetBooks(_books).Object;
 
-            ILibraryService result = new LibraryObjectService(library);
+            var result = new LibraryObjectService(library);
             result.DeleteBook(id);
         }
 

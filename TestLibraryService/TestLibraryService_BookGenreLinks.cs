@@ -55,8 +55,6 @@
                 new BookGenrePair(1, 1),
                 new BookGenrePair(2, 1)
             };
-
-            _mockData = new MockDataProvider().MockSetGenres(_genres).MockSetBooks(_books).MockSetBookGenrePair(_bookGenrePairs);
         }
 
         /// <summary>
@@ -65,7 +63,9 @@
         [TestMethod]
         public void TestAddGenreOfBook_Correct()
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetGenres(_genres).
+                                                 MockSetBooks(_books).
+                                                 MockSetBookGenrePair(_bookGenrePairs).Object;
 
             bool result = new LibraryObjectService(library).AddGenreToBook(book_id: 2, genre_id: 2);
 
@@ -81,7 +81,9 @@
         [DataRow(0, -2)]
         public void TestAddGenreOfBook_InCorrect(long book_id, long genre_id)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetGenres(_genres).
+                                                 MockSetBooks(_books).
+                                                 MockSetBookGenrePair(_bookGenrePairs).Object;
 
             bool result = new LibraryObjectService(library).AddGenreToBook(book_id, genre_id);
 
@@ -94,7 +96,9 @@
         [TestMethod]
         public void TestGetAllGenreBooks_Correct()
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetGenres(_genres).
+                                                 MockSetBooks(_books).
+                                                 MockSetBookGenrePair(_bookGenrePairs).Object;
 
             int result = new LibraryObjectService(library).GetAllGenreBooks(genre_Id: 1).Count();
 
@@ -110,7 +114,9 @@
         [DataRow(0)]
         public void TestGetAllGenreBooks_InCorrect(long id)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetGenres(_genres).
+                                                 MockSetBooks(_books).
+                                                 MockSetBookGenrePair(_bookGenrePairs).Object;
 
             int result = new LibraryObjectService(library).GetAllGenreBooks(genre_Id: id).Count();
 

@@ -9,48 +9,22 @@
     /// Library manager.
     /// </summary>
     /// <seealso cref="BusinessLogic_BookAPI.Services.ILibraryService" />
-    public class LibraryServiceForObjects : ILibraryService, ILibraryPairCreationManager,
+    public class LibraryObjectService : ILibraryService, ILibraryPairCreationManager,
                                             IBookShelf, IAuthorService, IGenreService
     {
         #region Initializing
 
         /// <summary>
-        /// List of books.
+        /// Data for <see cref="LibraryObjectService"/>
         /// </summary>
-        private List<Book> _books = new List<Book>();
+        private readonly IDataProvider _data;
 
         /// <summary>
-        /// List of authors.
+        /// Initializes a new instance of the <see cref="LibraryObjectService"/> class.
         /// </summary>
-        private List<Author> _authors = new List<Author>();
-
-        /// <summary>
-        /// List of genres.
-        /// </summary>
-        private List<Genre> _genres = new List<Genre>();
-
-        /// <summary>
-        /// Set of book-genre link.
-        /// </summary>
-        private HashSet<BookGenrePair> _bookGenrePair
-            = new HashSet<BookGenrePair>();
-
-        /// <summary>
-        /// Set of book-author pair.
-        /// </summary>
-        private HashSet<BookAuthorPair> _bookAuthorPair
-            = new HashSet<BookAuthorPair>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LibraryServiceForObjects"/> class.
-        /// </summary>
-        public LibraryServiceForObjects(IDataProvider data)
+        public LibraryObjectService(IDataProvider data)
         {
-            _books = data.GetBooks().ToList();
-            _authors = data.GetAuthors().ToList();
-            _genres = data.GetGenres().ToList();
-            _bookAuthorPair = new HashSet<BookAuthorPair>(data.GetBooksAuthors());
-            _bookGenrePair = new HashSet<BookGenrePair>(data.GetBooksGenres());
+            _data = data;
         }
 
         #endregion
@@ -67,7 +41,7 @@
         /// </returns>
         public Author CreateAuthor(Author author)
         {
-            _authors.Add(author);
+            _data.Authors.Add(author);
             return author;
         }
 
@@ -80,7 +54,7 @@
         /// </returns>
         public Book CreateBook(Book book)
         {
-            _books.Add(book);
+            _data.Books.Add(book);
             return book;
         }
 
@@ -93,7 +67,7 @@
         /// </returns>
         public Genre CreateGenre(Genre genre)
         {
-            _genres.Add(genre);
+            _data.Genres.Add(genre);
             return genre;
         }
 
@@ -102,13 +76,22 @@
         /// </summary>
         /// <param name="book_id">The book identifier.</param>
         /// <param name="genre_id">The genre identifier.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Throws if book or genre id is not exist.</exception>
+        /// <exception cref="ArgumentException">Throws if such pair already exists.</exception>
         public bool AddGenreToBook(long book_id, long genre_id)
         {
             bool result = false;
             if (GetBook(book_id) != null && GetGenre(genre_id) != null)
             {
-                result = _bookGenrePair.Add(new BookGenrePair(book_id, genre_id));
+                if (_data.BookGenrePairs.FirstOrDefault(pair => pair.Book_Id == book_id 
+                                                             && pair.Genre_Id == genre_id) == null)
+                {
+                    _data.BookGenrePairs.Add(new BookGenrePair(book_id, genre_id));
+                    result = true;
+                }
+                else
+                {
+                    throw new ArgumentException("Pair already exists.");
+                }               
             }
 
             return result;
@@ -119,13 +102,22 @@
         /// </summary>
         /// <param name="book_id">The book identifier.</param>
         /// <param name="author_id">The author identifier.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Throws if book or author id is not exist.</exception>
+        /// <exception cref="ArgumentException">Throws if such pair already exists.</exception>
         public bool AddAuthorOfBook(long book_id, long author_id)
         {
             bool result = false;
             if (GetBook(book_id) != null && GetAuthor(author_id) != null)
             {
-                result = _bookAuthorPair.Add(new BookAuthorPair(book_id, author_id));
+                if (_data.BookAuthorPairs.FirstOrDefault(pair => pair.Book_Id == book_id
+                                                             && pair.Author_Id == author_id) == null)
+                {
+                    _data.BookAuthorPairs.Add(new BookAuthorPair(book_id, author_id));
+                    result = true;
+                }
+                else
+                {
+                    throw new ArgumentException("Pair already exists.");
+                }
             }
 
             return result;
@@ -142,14 +134,19 @@
         /// <exception cref="ArgumentNullException">It is thrown if there is no author with such id.</exception>
         public void DeleteAuthor(long id)
         {
-            Author authorToDelete = _authors.FirstOrDefault((author) => author.Id == id);
+            Author authorToDelete = _data.Authors.FirstOrDefault((author) => author.Id == id);
             if (authorToDelete == null)
             {
                 throw new ArgumentNullException();
             }
 
-            _authors.Remove(authorToDelete);
-            _bookAuthorPair.RemoveWhere((bookAuthorPair) => bookAuthorPair.Author_Id == id);
+            _data.Authors.Remove(authorToDelete);
+            List<BookAuthorPair> pairsToDelete = 
+                _data.BookAuthorPairs.Where((bookAuthorPair) => bookAuthorPair.Author_Id == id).ToList();
+            foreach (var author in pairsToDelete)
+            {
+                _data.BookAuthorPairs.Remove(author);
+            }
         }
 
         /// <summary>
@@ -159,15 +156,26 @@
         /// <exception cref="ArgumentNullException">It is thrown if there is no book with such id.</exception>
         public void DeleteBook(long id)
         {
-            Book bookToDelete = _books.FirstOrDefault((book) => book.Id == id);
+            Book bookToDelete = _data.Books.FirstOrDefault((book) => book.Id == id);
             if (bookToDelete == null)
             {
                 throw new ArgumentNullException();
             }
 
-            _books.Remove(bookToDelete);
-            _bookAuthorPair.RemoveWhere((bookAuthorPair) => bookAuthorPair.Author_Id == id);
-            _bookGenrePair.RemoveWhere((bookGenrePair) => bookGenrePair.Genre_Id == id);
+            _data.Books.Remove(bookToDelete);
+            List<BookAuthorPair> authorPairsToDelete =
+                _data.BookAuthorPairs.Where((bookAuthorPair) => bookAuthorPair.Book_Id == id).ToList();
+            foreach (var author in authorPairsToDelete)
+            {
+                _data.BookAuthorPairs.Remove(author);
+            }
+
+            List<BookGenrePair> genrePairsToDelete =
+                _data.BookGenrePairs.Where((bookGenrePair) => bookGenrePair.Book_Id == id).ToList();
+            foreach (var genre in genrePairsToDelete)
+            {
+                _data.BookGenrePairs.Remove(genre);
+            }
         }
 
         /// <summary>
@@ -178,19 +186,19 @@
         /// <exception cref="FormatException">It is thrown if there are exist some books of this genre.</exception>
         public void DeleteGenre(long id)
         {
-            Genre genreToDelete = _genres.FirstOrDefault((genre) => genre.Id == id);
+            Genre genreToDelete = _data.Genres.FirstOrDefault((genre) => genre.Id == id);
             if (genreToDelete == null)
             {
                 throw new ArgumentNullException();
             }
 
-            if (_bookGenrePair.Any(bookGenrePair => bookGenrePair.Genre_Id == id))
+            if (_data.BookGenrePairs.Any(bookGenrePair => bookGenrePair.Genre_Id == id))
             {
                 throw new FormatException(); //The condition for deleting genre is absence of books of this genre
             }
             else
             {
-                _genres.Remove(genreToDelete);
+                _data.Genres.Remove(genreToDelete);
             }          
         }
 
@@ -203,11 +211,11 @@
         public bool DeleteGenreOfBook(long book_id, long genre_id)
         {
             bool result = false;
-            BookGenrePair bookGenrePair = _bookGenrePair.FirstOrDefault((pair) => pair.Book_Id == book_id
+            BookGenrePair bookGenrePair = _data.BookGenrePairs.FirstOrDefault((pair) => pair.Book_Id == book_id
                                                                           && pair.Genre_Id == genre_id);
             if (bookGenrePair!=null)
             {
-                result = _bookGenrePair.Remove(bookGenrePair);
+                result = _data.BookGenrePairs.Remove(bookGenrePair);
             }
 
             return result;
@@ -222,11 +230,11 @@
         public bool RemoveAuthorOfBook(long book_id, long author_id)
         {
             bool result = false;
-            BookAuthorPair bookAuthorPair = _bookAuthorPair.FirstOrDefault((pair) => pair.Book_Id == book_id
+            BookAuthorPair bookAuthorPair = _data.BookAuthorPairs.FirstOrDefault((pair) => pair.Book_Id == book_id
                                                                           && pair.Author_Id == author_id);
             if (bookAuthorPair != null)
             {
-                result = _bookAuthorPair.Remove(bookAuthorPair);
+                result = _data.BookAuthorPairs.Remove(bookAuthorPair);
             }
 
             return result;
@@ -245,7 +253,7 @@
         /// </returns>
         public IEnumerable<Author> GetAllAuthors()
         {
-            return _authors;
+            return _data.Authors;
         }
 
         /// <summary>
@@ -256,7 +264,7 @@
         /// </returns>
         public IEnumerable<Book> GetAllBooks()
         {
-            return _books;
+            return _data.Books;
         }
 
         /// <summary>
@@ -267,7 +275,7 @@
         /// </returns>
         public IEnumerable<Genre> GetAllGenres()
         {
-            return _genres;
+            return _data.Genres;
         }
 
         #endregion
@@ -283,7 +291,7 @@
         /// </returns>
         public Author GetAuthor(long id)
         {
-            return _authors.FirstOrDefault((author) => author.Id == id);
+            return _data.Authors.FirstOrDefault((author) => author.Id == id);
         }
 
         /// <summary>
@@ -293,7 +301,7 @@
         /// <returns>The chozen book.</returns>
         public Book GetBook(long id)
         {
-            return _books.FirstOrDefault((book) => book.Id == id);
+            return _data.Books.FirstOrDefault((book) => book.Id == id);
         }
 
         /// <summary>
@@ -305,7 +313,7 @@
         /// </returns>
         public Genre GetGenre(long id)
         {
-            return _genres.FirstOrDefault((genre) => genre.Id == id);
+            return _data.Genres.FirstOrDefault((genre) => genre.Id == id);
         }
 
         #endregion
@@ -322,7 +330,7 @@
         /// </returns>
         public Author UpdateAuthor(long id, Author author)
         {
-            Author authorToUpdate = _authors.FirstOrDefault((oldAuthor) => oldAuthor.Id == id);
+            Author authorToUpdate = _data.Authors.FirstOrDefault((oldAuthor) => oldAuthor.Id == id);
             if (authorToUpdate != null)
             {
                 authorToUpdate.Clone(author);
@@ -341,7 +349,7 @@
         /// </returns>
         public Book UpdateBook(long id, Book book)
         {
-            Book bookToUpdate = _books.FirstOrDefault((oldBook) => oldBook.Id == id);
+            Book bookToUpdate = _data.Books.FirstOrDefault((oldBook) => oldBook.Id == id);
             if (bookToUpdate != null)
             {
                 bookToUpdate.Clone(book);
@@ -355,16 +363,28 @@
         /// </summary>
         /// <param name="book_id">The book identifier.</param>
         /// <param name="genre_id">The genre identifier.</param>
-        /// <returns>Is updated.</returns>
-        bool UpdateGenreOfBook(long book_id, long genre_id, long newGenre_id)
+        /// <param name="newGenre_id">The identifier of a new genre.</param>
+        /// <returns>
+        /// Is updated.
+        /// </returns>
+        /// <exception cref="ArgumentException">Throws if receiving pair already exists.</exception>
+        public bool UpdateGenreOfBook(long book_id, long genre_id, long newGenre_id)
         {
             bool result = false;
-            BookGenrePair bookGenrePair = _bookGenrePair.First((pair) => pair.Book_Id == book_id
+            BookGenrePair bookGenrePair = _data.BookGenrePairs.First((pair) => pair.Book_Id == book_id
                                                                       && pair.Genre_Id == genre_id);
             if (bookGenrePair != null && GetGenre(newGenre_id) != null)
             {
-                bookGenrePair.ChangeGenre(newGenre_id);
-                result = true;
+                if (_data.BookGenrePairs.FirstOrDefault(pair => pair.Book_Id == book_id
+                                                             && pair.Genre_Id == newGenre_id) == null)
+                {
+                    bookGenrePair.ChangeGenre(newGenre_id);
+                    result = true;
+                }
+                else
+                {
+                    throw new ArgumentException("Receiving pair already exists.");
+                }
             }
 
             return result;
@@ -376,15 +396,24 @@
         /// <param name="book_id">The book identifier.</param>
         /// <param name="author_id">The author identifier.</param>
         /// <returns>Is updated.</returns>
-        bool UpdateAuthorOfBook(long book_id, long author_id, long newAuthor_id)
+        /// <exception cref="ArgumentException">Throws if receiving pair already exists.</exception>
+        public bool UpdateAuthorOfBook(long book_id, long author_id, long newAuthor_id)
         {
             bool result = false;
-            BookAuthorPair bookAuthorPair = _bookAuthorPair.First((pair) => pair.Book_Id == book_id
+            BookAuthorPair bookAuthorPair = _data.BookAuthorPairs.First((pair) => pair.Book_Id == book_id
                                                                       && pair.Author_Id == author_id);
             if (bookAuthorPair != null && GetAuthor(newAuthor_id) != null)
             {
-                bookAuthorPair.ChangeAuthor(newAuthor_id);
-                result = true;
+                if (_data.BookAuthorPairs.FirstOrDefault(pair => pair.Book_Id == book_id
+                                                             && pair.Author_Id == newAuthor_id) == null)
+                {
+                    bookAuthorPair.ChangeAuthor(newAuthor_id);
+                    result = true;
+                }
+                else
+                {
+                    throw new ArgumentException("Receiving pair already exists.");
+                }
             }
 
             return result;
@@ -401,9 +430,9 @@
         /// <returns>Enumeration of books.</returns>
         public IEnumerable<Book> GetAuthorBooks(long author_Id)
         {
-            foreach (var authorBook in _bookAuthorPair.Where(bookAuthorPair => bookAuthorPair.Author_Id == author_Id))
+            foreach (var authorBook in _data.BookAuthorPairs.Where(bookAuthorPair => bookAuthorPair.Author_Id == author_Id))
             {
-                yield return _books.FirstOrDefault((book) => book.Id == authorBook.Book_Id);
+                yield return _data.Books.FirstOrDefault((book) => book.Id == authorBook.Book_Id);
             }
         }
 
@@ -414,9 +443,9 @@
         /// <returns>Enumeration of books.</returns>
         public IEnumerable<Book> GetAllGenreBooks(long genre_Id)
         {
-            foreach (var genreBook in _bookGenrePair.Where(bookGenrePair => bookGenrePair.Genre_Id == genre_Id))
+            foreach (var genreBook in _data.BookGenrePairs.Where(bookGenrePair => bookGenrePair.Genre_Id == genre_Id))
             {
-                yield return _books.FirstOrDefault((book) => book.Id == genreBook.Book_Id);
+                yield return _data.Books.FirstOrDefault((book) => book.Id == genreBook.Book_Id);
             }
         }
 

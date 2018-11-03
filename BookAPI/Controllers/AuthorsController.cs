@@ -16,17 +16,23 @@
     public class AuthorsController : ControllerBase
     {
         /// <summary>
-        /// The interface reference for DI inverse
+        /// The interface reference of authors for DI inverse
         /// </summary>
-        private readonly ILibraryService _authors;
+        private readonly IAuthorService _authors;
+
+        /// <summary>
+        /// The interface reference of library for DI inverse
+        /// </summary>
+        private readonly ILibraryService _libraryService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorsController"/> class.
         /// </summary>
         /// <param name="authors">The instance of authors.</param>
-        public AuthorsController(ILibraryService authors)
+        public AuthorsController(IAuthorService authors, ILibraryService library)
         {
             _authors = authors;
+            _libraryService = library;
         }
 
         /// <summary>
@@ -101,7 +107,7 @@
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<Author> authorlist = _authors.GetAllAuthors().ToList();
+            List<Author> authorlist = _libraryService.GetAllAuthors().ToList();
             if (authorlist.Count == 0)
             {
                 return NotFound("Any writer are not recorded!");
@@ -118,7 +124,7 @@
         [HttpGet("{id}/books")]
         public IActionResult GetBooksOfAuthor(long id)
         {
-            List<Book> books = _authors.GetAuthorBooks(id).ToList();
+            List<Book> books = _libraryService.GetAuthorBooks(id).ToList();
             if (books.Count == 0)
             {
                 return NotFound("No books written by that author!");

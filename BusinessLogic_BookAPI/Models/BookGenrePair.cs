@@ -49,17 +49,6 @@
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
-        /// </summary>
-        /// <returns>
-        /// A hash code for this instance, used in a hash table. 
-        /// </returns>
-        public override int GetHashCode()
-        {
-            return Book_Id.GetHashCode() + Genre_Id.GetHashCode();
-        }
-
-        /// <summary>
         /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
         /// </summary>
         /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>

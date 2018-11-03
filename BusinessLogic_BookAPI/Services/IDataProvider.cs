@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using BusinessLogic_BookAPI.Models;
 
     /// <summary>
@@ -10,33 +11,28 @@
     public interface IDataProvider
     {
         /// <summary>
-        /// Gets book enumeration.
+        /// Gets or sets book enumeration.
         /// </summary>
-        /// <returns>Enumeration of books</returns>
-        IEnumerable<Book> GetBooks();
+        IList<Book> Books { get; set; }
 
         /// <summary>
-        /// Gets the author enumeration.
+        /// Gets or sets the author enumeration.
         /// </summary>
-        /// <returns>Enumeration of authors</returns>
-        IEnumerable<Author> GetAuthors();
+        IList<Author> Authors { get; set; }
 
         /// <summary>
-        /// Gets the genre enumeration.
+        /// Gets or sets the genre enumeration.
         /// </summary>
-        /// <returns>Enumeration of genres</returns>
-        IEnumerable<Genre> GetGenres();
+        IList<Genre> Genres { get; set; }
 
         /// <summary>
-        /// Gets links between books and authors.
+        /// Gets or sets links between books and authors.
         /// </summary>
-        /// <returns>Enumeration of Book-Author pair</returns>
-        IEnumerable<BookAuthorPair> GetBooksAuthors();
+        IList<BookAuthorPair> BookAuthorPairs { get; set; }
 
         /// <summary>
-        /// Gets links between books and genres.
+        /// Gets or sets links between books and genres.
         /// </summary>
-        /// <returns>Enumeration of Book-Genre pair</returns>
-        IEnumerable<BookGenrePair> GetBooksGenres();
+        IList<BookGenrePair> BookGenrePairs { get; set; }
     }
 }

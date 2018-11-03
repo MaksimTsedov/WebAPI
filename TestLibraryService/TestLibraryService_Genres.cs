@@ -34,9 +34,7 @@
             _genres = new List<Genre> {
                 new Genre("Test1"),
                 new Genre("Test2")
-            };
-
-            _mockData = new MockDataProvider().MockSetGenres(_genres);
+            };           
         }
 
         /// <summary>
@@ -45,7 +43,7 @@
         [TestMethod]
         public void TestGetGenres()
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetGenres(_genres).Object;
 
             int result = new LibraryObjectService(library).GetAllGenres().Count();
 
@@ -61,7 +59,7 @@
         [DataRow("NewTest")]
         public void TestAddGenre_Correct(string naming)
         {
-            var library = _mockData.Object;
+            var library = new MockDataProvider().MockSetGenres(_genres).Object;
 
             Genre result = new LibraryObjectService(library).CreateGenre(new Genre(naming));
 
@@ -77,8 +75,10 @@
         [DataRow(1)]
         public void TestDeleteGenre_Correct(long id)
         {
-            var library = _mockData.Object;
-            ILibraryService result = new LibraryObjectService(library);
+            var library = new MockDataProvider().MockSetGenres(_genres).
+                                                 MockSetBooks(new List<Book> { new Book("Test", 1, 1) }).
+                                                 MockSetBookGenrePair(new List<BookGenrePair> { }).Object;
+            var result = new LibraryObjectService(library);
 
             result.DeleteGenre(id);
 
@@ -95,9 +95,8 @@
         [ExpectedException(typeof(FormatException))]
         public void TestDeleteGenre_FormatExceptionThrow(long id)
         {
-            var library = _mockData.Object;
-            library = SetTestBooks(id);
-            ILibraryService result = new LibraryObjectService(library);
+            var library = SetTestBooks(id);
+            var result = new LibraryObjectService(library);
 
             result.DeleteGenre(id);
         }
@@ -113,8 +112,8 @@
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestDeleteAuthor_ArgumentNullExceptionThrow(long id)
         {
-            var library = _mockData.Object;
-            ILibraryService result = new LibraryObjectService(library);
+            var library = new MockDataProvider().MockSetGenres(_genres).Object;
+            var result = new LibraryObjectService(library);
 
             result.DeleteAuthor(id);
         }

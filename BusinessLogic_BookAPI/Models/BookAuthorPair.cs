@@ -6,7 +6,7 @@
     /// <summary>
     /// Class for Book-Author pair
     /// </summary>
-    public class BookAuthorPair : IEquatable<BookAuthorPair>
+    public class BookAuthorPair
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BookAuthorPair"/> class.
@@ -46,17 +46,6 @@
         public void ChangeAuthor(long author_id)
         {
             this.Author_Id = author_id;
-        }
-
-        /// <summary>
-        /// Returns a hash code for this instance.
-        /// </summary>
-        /// <returns>
-        /// A hash code for this instance, used in a hash table. 
-        /// </returns>
-        public override int GetHashCode()
-        {
-            return Book_Id.GetHashCode() + Author_Id.GetHashCode();
         }
 
         /// <summary>
