@@ -15,7 +15,7 @@
             return this;
         }
 
-        public MockDataProvider MockSetBooks(List<Book> books)
+        public MockDataProvider MockSetBooks(List<Books> books)
         {
             Setup(lib => lib.Books).Returns(books);
             return this;

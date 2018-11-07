@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
     /// Class for Book-Genre pair
@@ -9,15 +10,16 @@
     public class BookGenrePair : IEquatable<BookGenrePair>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="BookGenrePair"/> class.
+        /// Gets pair identifier.
         /// </summary>
-        /// <param name="book_id">The book identifier.</param>
-        /// <param name="genre_id">The genre identifier.</param>
-        public BookGenrePair(long book_id, long genre_id)
-        {
-            this.Book_Id = book_id;
-            this.Genre_Id = genre_id;
-        }
+        /// <value>
+        /// The pair identifier.
+        /// </value>
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Id should be natural number!")]
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets the book identifier.
@@ -26,8 +28,8 @@
         /// The book identifier.
         /// </value>
         [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Id should be natural number!")]
-        public long Book_Id { get; private set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Id should be natural number!")]
+        public int Book_Id { get; set; }
 
         /// <summary>
         /// Gets the genre identifier.
@@ -36,14 +38,14 @@
         /// The genre identifier.
         /// </value>
         [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Id should be natural number!")]
-        public long Genre_Id { get; private set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Id should be natural number!")]
+        public int Genre_Id { get; set; }
 
         /// <summary>
         /// Changes genre for this instance of Book-Genre pair.
         /// </summary>
         /// <param name="book">New genre id.</param>
-        public void ChangeGenre(long genre_id)
+        public void ChangeGenre(int genre_id)
         {
             this.Genre_Id = genre_id;
         }

@@ -13,7 +13,7 @@
         /// <summary>
         /// Gets or sets book enumeration.
         /// </summary>
-        IList<Book> Books { get; set; }
+        IList<Books> Books { get; set; }
 
         /// <summary>
         /// Gets or sets the author enumeration.

@@ -4,12 +4,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using BusinessLogic_BookAPI.Models;
+    using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
     /// Library manager.
     /// </summary>
     /// <seealso cref="BusinessLogic_BookAPI.Services.ILibraryService" />
-    public class LibraryObjectService : ILibraryService, ILibraryPairCreationManager,
+    public class LibraryDbService : ILibraryService, ILibraryPairCreationManager,
                                             IBookShelf, IAuthorService, IGenreService
     {
         #region Initializing
@@ -17,20 +18,19 @@
         /// <summary>
         /// Data for <see cref="LibraryObjectService"/>
         /// </summary>
-        private readonly IDataProvider _data;
+        private readonly LibraryDatabase _data;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LibraryObjectService"/> class.
         /// </summary>
-        public LibraryObjectService(IDataProvider data)
+        public LibraryDbService(LibraryDatabase database)
         {
-            _data = data;
+            _data = database;
         }
 
         #endregion
 
         #region Creating
-
 
         /// <summary>
         /// Creates and adds to list an author.
@@ -42,6 +42,7 @@
         public Author CreateAuthor(Author author)
         {
             _data.Authors.Add(author);
+            _data.SaveChanges();
             return author;
         }
 
@@ -55,6 +56,7 @@
         public Books CreateBook(Books book)
         {
             _data.Books.Add(book);
+            _data.SaveChanges();
             return book;
         }
 
@@ -68,6 +70,7 @@
         public Genre CreateGenre(Genre genre)
         {
             _data.Genres.Add(genre);
+            _data.SaveChanges();
             return genre;
         }
 
@@ -82,7 +85,7 @@
             bool result = false;
             if (GetBook(book_id) != null && GetGenre(genre_id) != null)
             {
-                if (_data.BookGenrePairs.FirstOrDefault(pair => pair.Book_Id == book_id 
+                if (_data.BookGenrePairs.FirstOrDefault(pair => pair.Book_Id == book_id
                                                              && pair.Genre_Id == genre_id) == null)
                 {
                     _data.BookGenrePairs.Add(new BookGenrePair { Book_Id = book_id, Genre_Id = genre_id });
@@ -91,9 +94,10 @@
                 else
                 {
                     throw new ArgumentException("Pair already exists.");
-                }               
+                }
             }
 
+            _data.SaveChanges();
             return result;
         }
 
@@ -120,6 +124,7 @@
                 }
             }
 
+            _data.SaveChanges();
             return result;
         }
 
@@ -141,12 +146,14 @@
             }
 
             _data.Authors.Remove(authorToDelete);
-            List<BookAuthorPair> pairsToDelete = 
+            List<BookAuthorPair> pairsToDelete =
                 _data.BookAuthorPairs.Where((bookAuthorPair) => bookAuthorPair.Author_Id == id).ToList();
             foreach (var author in pairsToDelete)
             {
                 _data.BookAuthorPairs.Remove(author);
             }
+
+            _data.SaveChanges();
         }
 
         /// <summary>
@@ -176,6 +183,8 @@
             {
                 _data.BookGenrePairs.Remove(genre);
             }
+
+            _data.SaveChanges();
         }
 
         /// <summary>
@@ -199,7 +208,9 @@
             else
             {
                 _data.Genres.Remove(genreToDelete);
-            }          
+            }
+
+            _data.SaveChanges();
         }
 
         /// <summary>
@@ -213,11 +224,13 @@
             bool result = false;
             BookGenrePair bookGenrePair = _data.BookGenrePairs.FirstOrDefault((pair) => pair.Book_Id == book_id
                                                                           && pair.Genre_Id == genre_id);
-            if (bookGenrePair!=null)
+            if (bookGenrePair != null)
             {
-                result = _data.BookGenrePairs.Remove(bookGenrePair);
+                _data.BookGenrePairs.Remove(bookGenrePair);
+                result = true;
             }
 
+            _data.SaveChanges();
             return result;
         }
 
@@ -234,12 +247,14 @@
                                                                           && pair.Author_Id == author_id);
             if (bookAuthorPair != null)
             {
-                result = _data.BookAuthorPairs.Remove(bookAuthorPair);
+                _data.BookAuthorPairs.Remove(bookAuthorPair);
+                result = true;
             }
 
+            _data.SaveChanges();
             return result;
         }
-         
+
 
         #endregion
 
@@ -336,6 +351,7 @@
                 authorToUpdate.Clone(author);
             }
 
+            _data.SaveChanges();
             return authorToUpdate;
         }
 
@@ -355,6 +371,7 @@
                 bookToUpdate.Clone(book);
             }
 
+            _data.SaveChanges();
             return bookToUpdate;
         }
 
@@ -387,6 +404,7 @@
                 }
             }
 
+            _data.SaveChanges();
             return result;
         }
 
@@ -416,6 +434,7 @@
                 }
             }
 
+             _data.SaveChanges();
             return result;
         }
 

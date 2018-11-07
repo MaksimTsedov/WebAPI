@@ -27,7 +27,7 @@
         /// <summary>
         /// List of books
         /// </summary>
-        private static List<Book> _books;
+        private static List<Books> _books;
 
         /// <summary>
         /// List of pairs
@@ -38,22 +38,22 @@
         /// Initializes the library instance with some genres, books and their connection.
         /// </summary>
         /// <param name="context">The context.</param>
-        [ClassInitialize]
-        public static void Initialize(TestContext context)
+        [TestInitialize]
+        public void Initialize()
         {
             _genres = new List<Genre> {
-                new Genre("Test1"),
-                new Genre("Test2")
+                new Genre(){ Id = 1, Naming = "Test1" },
+                new Genre(){ Id = 2, Naming = "Test2" }
             };
 
-            _books = new List<Book> {
-                new Book("Test1", 100, 100),
-                new Book("Test2", 21, -100)
+            _books = new List<Books> {
+                new Books(){ Id = 1, Title = "Test1", NumberOfPages = 100, Year = 100 },
+                new Books(){ Id = 2, Title = "Test2", NumberOfPages = 21, Year = -100 }
             };
 
             _bookGenrePairs = new List<BookGenrePair> {
-                new BookGenrePair(1, 1),
-                new BookGenrePair(2, 1)
+                new BookGenrePair(){ Book_Id = 1, Genre_Id = 1 },
+                new BookGenrePair(){ Book_Id = 2, Genre_Id = 1 }
             };
         }
 
@@ -79,7 +79,7 @@
         [DataRow(2, 3)]
         [DataRow(3, 1)]
         [DataRow(0, -2)]
-        public void TestAddGenreOfBook_InCorrect(long book_id, long genre_id)
+        public void TestAddGenreOfBook_InCorrect(int book_id, int genre_id)
         {
             var library = new MockDataProvider().MockSetGenres(_genres).
                                                  MockSetBooks(_books).

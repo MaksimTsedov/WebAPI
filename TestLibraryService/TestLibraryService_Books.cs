@@ -22,18 +22,18 @@ namespace TestLibraryService
         /// <summary>
         /// List of books
         /// </summary>
-        private static List<Book> _books;
+        private static List<Books> _books;
 
         /// <summary>
         /// Initializes the library instance with some books.
         /// </summary>
         /// <param name="context">The context.</param>
-        [ClassInitialize]
-        public static void Initialize(TestContext context)
+        [TestInitialize]
+        public void Initialize()
         {
-            _books = new List<Book> {
-                new Book("Test1", 100, 100),
-                new Book("Test2", 21, -100)
+            _books = new List<Books> {
+                new Books(){ Id = 1, Title = "Test1", NumberOfPages = 100, Year = 100 },
+                new Books(){ Id = 2, Title = "Test2", NumberOfPages = 100, Year = -100 }
             };
         }
 
@@ -61,7 +61,7 @@ namespace TestLibraryService
         {
             var library = new MockDataProvider().MockSetBooks(_books).Object;
 
-            Book result = new LibraryObjectService(library).GetBook(id);
+            Books result = new LibraryObjectService(library).GetBook(id);
 
             Assert.IsNotNull(result);
         }
@@ -78,7 +78,7 @@ namespace TestLibraryService
         {
             var library = new MockDataProvider().MockSetBooks(_books).Object;
 
-            Book result = new LibraryObjectService(library).GetBook(id);
+            Books result = new LibraryObjectService(library).GetBook(id);
 
             Assert.IsNull(result);
         }
@@ -90,15 +90,16 @@ namespace TestLibraryService
         /// <param name="numberOfPages">The number of pages.</param>
         /// <param name="year">The year of publishing.</param>
         [TestMethod]
-        [DataRow("Test3", 100, 100)]
-        [DataRow("new test", 20, 100)]
-        public void TestAddBook_Correct(string title, int numberOfPages, int year)
+        [DataRow(3, "Test3", 100, 100)]
+        [DataRow(4, "new test", 20, 100)]
+        public void TestAddBook_Correct(int id, string title, int numberOfPages, int year)
         {
             var library = new MockDataProvider().MockSetBooks(_books).Object;
 
-            Book result = new LibraryObjectService(library).CreateBook(new Book(title, numberOfPages, year));
+            Books result = new LibraryObjectService(library).
+                           CreateBook(new Books() { Id = id, Title = title, NumberOfPages = numberOfPages, Year = year });
 
-            Assert.AreEqual(result, new Book(title, numberOfPages, year));
+            Assert.AreEqual(result, new Books() { Id = id, Title = title, NumberOfPages = numberOfPages, Year = year });
         }
 
         /// <summary>
@@ -111,13 +112,14 @@ namespace TestLibraryService
         [TestMethod]
         [DataRow(1, "Test3", 100, 100)]
         [DataRow(2, "new test", 20, 100)]
-        public void TestUpdateBook_Correct(long id, string title, int numberOfPages, int year)
+        public void TestUpdateBook_Correct(int id, string title, int numberOfPages, int year)
         {
             var library = new MockDataProvider().MockSetBooks(_books).Object;
 
-            Book result = new LibraryObjectService(library).UpdateBook(id, new Book(title, numberOfPages, year));
+            Books result = new LibraryObjectService(library).
+                           UpdateBook(id, new Books() { Id = id, Title = title, NumberOfPages = numberOfPages, Year = year });
 
-            Assert.AreEqual(result, new Book(title, numberOfPages, year));
+            Assert.AreEqual(result, new Books() { Id = id, Title = title, NumberOfPages = numberOfPages, Year = year });
         }
 
         /// <summary>
@@ -128,13 +130,14 @@ namespace TestLibraryService
         /// <param name="numberOfPages">The number of pages.</param>
         /// <param name="year">The year of publishing.</param>
         [TestMethod]
-        [DataRow(3, "Test3", 100, 100)]
+        [DataRow(5, "Test3", 100, 100)]
         [DataRow(-1, "new test", 20, 100)]
-        public void TestUpdateBook_InCorrect(long id, string title, int numberOfPages, int year)
+        public void TestUpdateBook_InCorrect(int id, string title, int numberOfPages, int year)
         {
             var library = new MockDataProvider().MockSetBooks(_books).Object;
 
-            Book result = new LibraryObjectService(library).UpdateBook(id, new Book(title, numberOfPages, year));
+            Books result = new LibraryObjectService(library).
+                           UpdateBook(id, new Books() { Id = id, Title = title, NumberOfPages = numberOfPages, Year = year });
 
             Assert.IsNull(result);
         }
@@ -146,7 +149,7 @@ namespace TestLibraryService
         [TestMethod]
         [DataRow(2)]
         [DataRow(1)]
-        public void TestDeleteBook_Correct(long id)
+        public void TestDeleteBook_Correct(int id)
         {
             var library = SetTestData(id);
             var result = new LibraryObjectService(library);
@@ -180,14 +183,14 @@ namespace TestLibraryService
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Test data.</returns>
-        private IDataProvider SetTestData(long id)
+        private IDataProvider SetTestData(int id)
         {
             // Setting test data for mock to test correct deletion of a book
             _mockData = new MockDataProvider().MockSetBooks(_books).
-                                               MockSetAuthors(new List<Author> { new Author("Test", "Testcountry") }).
-                                               MockSetGenres(new List<Genre> { new Genre("Test") }).
-                                               MockSetBookAuthorPair(new List<BookAuthorPair> { new BookAuthorPair(id, 1) }).
-                                               MockSetBookGenrePair(new List<BookGenrePair> { new BookGenrePair(id, 1) });
+                                               MockSetAuthors(new List<Author> { new Author() { Id = 1, FullName = "Test", Country = "Testcountry" } }).
+                                               MockSetGenres(new List<Genre> { new Genre() { Id = 1, Naming = "Test" } }).
+                                               MockSetBookAuthorPair(new List<BookAuthorPair> { new BookAuthorPair() { Book_Id = id, Author_Id = 1 } }).
+                                               MockSetBookGenrePair(new List<BookGenrePair> { new BookGenrePair() { Book_Id = id, Genre_Id = 1 } });
             return _mockData.Object;
         }
     }

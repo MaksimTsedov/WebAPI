@@ -26,7 +26,7 @@
         /// <summary>
         /// List of books
         /// </summary>
-        private static List<Book> _books;
+        private static List<Books> _books;
 
         /// <summary>
         /// List of pairs
@@ -37,22 +37,22 @@
         /// Initializes the library instance with some authors, books and their connection.
         /// </summary>
         /// <param name="context">The context.</param>
-        [ClassInitialize]
-        public static void Initialize(TestContext context)
+        [TestInitialize]
+        public void Initialize()
         {
             _authors = new List<Author> {
-                new Author("Test1", "Testcountry1"),
-                new Author("Test2", "Testcountry2")
+                new Author(){ Id = 1, FullName ="Test1", Country = "Testcountry1" },
+                new Author(){ Id = 2, FullName ="Test2", Country = "Testcountry2" }
             };
 
-            _books = new List<Book> {
-                new Book("Test1", 100, 100),
-                new Book("Test2", 21, -100)
+            _books = new List<Books> {
+                new Books(){ Id = 1, Title = "Test1", NumberOfPages = 100, Year = 100 },
+                new Books(){ Id = 2, Title = "Test2", NumberOfPages = 21, Year = -100 }
             };
 
             _bookAuthorPairs = new List<BookAuthorPair> {
-                new BookAuthorPair(1, 1),
-                new BookAuthorPair(2, 1)
+                new BookAuthorPair(){ Book_Id = 1, Author_Id  = 1},
+                new BookAuthorPair(){ Book_Id = 2, Author_Id = 1}
             };
         }
 
@@ -78,7 +78,7 @@
         [DataRow(2, 3)]
         [DataRow(3, 1)]
         [DataRow(0, -2)]
-        public void TestAddAuthorOfBook_InCorrect(long book_id, long author_id)
+        public void TestAddAuthorOfBook_InCorrect(int book_id, int author_id)
         {
             var library = new MockDataProvider().MockSetAuthors(_authors).
                                                              MockSetBooks(_books).

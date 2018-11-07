@@ -1,31 +1,15 @@
 ﻿namespace BusinessLogic_BookAPI.Models
 {
+    using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
     /// Book entity
     /// </summary>
-    public class Book
+    public class Books
     {
-        /// <summary>
-        /// The global count for id autoincrement
-        /// </summary>
-        private static int _globalCount;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Book"/> class.
-        /// </summary>
-        /// <param name="title">The title of a book.</param>
-        /// <param name="numberOfPages">The number of pages.</param>
-        /// <param name="year">The year.</param>
-        public Book(string title, int numberOfPages, int? year)
-        {
-            this.Title = title;
-            this.NumberOfPages = numberOfPages;
-            this.Year = year;
-            this.Id = ++_globalCount;
-        }
-
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>
@@ -33,8 +17,8 @@
         /// The identifier.
         /// </value>
         [Required(ErrorMessage = "Id is always required!")]
-        [Range(1, long.MaxValue, ErrorMessage = "Id should be natural number!")]
-        public long Id { get; private set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Id should be natural number!")]
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the title of a book.
@@ -69,7 +53,7 @@
         /// Clones the book information.
         /// </summary>
         /// <param name="book">The book to clone.</param>
-        public void Clone(Book book)
+        public void Clone(Books book)
         {
             this.Title = book.Title;
             this.NumberOfPages = book.NumberOfPages;
@@ -79,13 +63,13 @@
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
         /// </summary>
-        /// <param name="book">The <see cref="Book" /> to compare with this instance.</param>
+        /// <param name="book">The <see cref="Books" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="Book" /> is equal to this instance; otherwise, <c>false</c>.
+        ///   <c>true</c> if the specified <see cref="Books" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object book)
         {
-            Book bookToCompare = book as Book;
+            Books bookToCompare = book as Books;
             if (this.Title == bookToCompare.Title
              && this.NumberOfPages == bookToCompare.NumberOfPages
              && this.Year == bookToCompare.Year)

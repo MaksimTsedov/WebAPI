@@ -13,14 +13,14 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Chozen book.</returns>
-        Book GetBook(long id);
+        Books GetBook(long id);
 
         /// <summary>
         /// Creates the book.
         /// </summary>
         /// <param name="book">The book.</param>
         /// <returns>Created book.</returns>
-        Book CreateBook(Book book);
+        Books CreateBook(Books book);
 
         /// <summary>
         /// Updates a book by its id.
@@ -28,7 +28,7 @@
         /// <param name="id">The identifier.</param>
         /// <param name="book">The book.</param>
         /// <returns>Updated book.</returns>
-        Book UpdateBook(long id, Book book);
+        Books UpdateBook(long id, Books book);
 
         /// <summary>
         /// Deletes a book by its id.

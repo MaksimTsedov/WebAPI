@@ -47,7 +47,7 @@
         /// <param name="book">The book.</param>
         /// <returns>HTTP result of operation execution.</returns>
         [HttpPost]
-        public IActionResult AddBook(Book book)
+        public IActionResult AddBook(Books book)
         {
             if (!ModelState.IsValid)
             {
@@ -65,7 +65,7 @@
         /// <param name="author_id">The author identifier.</param>
         /// <returns>HTTP result of operation execution.</returns>
         [HttpPost("{book_id}/authors/{author_id}")]
-        public IActionResult AddBookAuthor(long book_id, long author_id)
+        public IActionResult AddBookAuthor(int book_id, int author_id)
         {
             try
             {
@@ -90,7 +90,7 @@
         /// <param name="genre_id">The genre identifier.</param>
         /// <returns>HTTP result of operation execution.</returns>
         [HttpPost("{book_id}/genres/{genre_id}")]
-        public IActionResult AddBookGenre(long book_id, long genre_id)
+        public IActionResult AddBookGenre(int book_id, int genre_id)
         {
             try
             {
@@ -115,14 +115,14 @@
         /// <param name="item">The book.</param>
         /// <returns>HTTP result of operation execution.</returns>
         [HttpPut("{id}")]
-        public IActionResult UpdateBook(long id, Book item)
+        public IActionResult UpdateBook(long id, Books item)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Not a valid model");
             }
 
-            Book updatedBook = _books.UpdateBook(id, item);
+            Books updatedBook = _books.UpdateBook(id, item);
             if (updatedBook == null)
             {
                 return NotFound("No book with such id!");
@@ -139,7 +139,7 @@
         /// <param name="newAuthor_id">The identifier of a new author .</param>
         /// <returns>HTTP result of operation execution.</returns>
         [HttpPut("{book_id}/authors/{author_id}")]
-        public IActionResult ChangeBookAuthor(long book_id, long author_id, long newAuthor_id)
+        public IActionResult ChangeBookAuthor(int book_id, int author_id, int newAuthor_id)
         {
             if (!ModelState.IsValid)
             {
@@ -158,7 +158,7 @@
 
                 return Conflict(ex.Message);
             }
-            
+
             return Ok();
         }
 
@@ -170,7 +170,7 @@
         /// <param name="newAuthor_id">The identifier of a new genre .</param>
         /// <returns>HTTP result of operation execution.</returns>
         [HttpPut("{book_id}/genres/{genre_id}")]
-        public IActionResult ChangeBookGenre(long book_id, long genre_id, long newGenre_id)
+        public IActionResult ChangeBookGenre(int book_id, int genre_id, int newGenre_id)
         {
             if (!ModelState.IsValid)
             {
@@ -269,7 +269,7 @@
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<Book> booklist = _libraryService.GetAllBooks().ToList();
+            List<Books> booklist = _libraryService.GetAllBooks().ToList();
             if (booklist.Count == 0)
             {
                 return NotFound("Any book are not recorded!");
@@ -286,7 +286,7 @@
         [HttpGet("{id}")]
         public IActionResult GetById(long id)
         {
-            Book bookToFind = _books.GetBook(id);
+            Books bookToFind = _books.GetBook(id);
             if (bookToFind == null)
             {
                 return NotFound("No book with such id!");

@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
     /// Class for Book-Author pair
@@ -9,15 +10,16 @@
     public class BookAuthorPair
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="BookAuthorPair"/> class.
+        /// Gets pair identifier.
         /// </summary>
-        /// <param name="book_id">The book identifier.</param>
-        /// <param name="author_id">The author identifier.</param>
-        public BookAuthorPair(long book_id, long author_id)
-        {
-            this.Book_Id = book_id;
-            this.Author_Id = author_id;
-        }
+        /// <value>
+        /// The pair identifier.
+        /// </value>
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Id should be natural number!")]
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets the book identifier.
@@ -26,8 +28,8 @@
         /// The book identifier.
         /// </value>
         [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Id should be natural number!")]
-        public long Book_Id { get; private set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Id should be natural number!")]
+        public int Book_Id { get; set; }
 
         /// <summary>
         /// Gets the author identifier.
@@ -36,14 +38,14 @@
         /// The author identifier.
         /// </value>
         [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Id should be natural number!")]
-        public long Author_Id { get; private set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Id should be natural number!")]
+        public int Author_Id { get; set; }
 
         /// <summary>
         /// Changes author for this instance of Book-Author pair.
         /// </summary>
         /// <param name="book">New author id.</param>
-        public void ChangeAuthor(long author_id)
+        public void ChangeAuthor(int author_id)
         {
             this.Author_Id = author_id;
         }

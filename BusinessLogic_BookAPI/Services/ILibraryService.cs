@@ -21,7 +21,7 @@
         /// Gets all books.
         /// </summary>
         /// <returns>Enumeration of all books</returns>
-        IEnumerable<Book> GetAllBooks();
+        IEnumerable<Books> GetAllBooks();
 
         /// <summary>
         /// Gets all genres.
@@ -34,13 +34,13 @@
         /// </summary>
         /// <param name="author_Id">The author identifier.</param>
         /// <returns>Enumeration of books.</returns>
-        IEnumerable<Book> GetAuthorBooks(long author_Id);
+        IEnumerable<Books> GetAuthorBooks(long author_Id);
 
         /// <summary>
         /// Gets all books of supposed genre.
         /// </summary>
         /// <param name="genre_Id">The genre identifier.</param>
         /// <returns>Enumeration of books.</returns>
-        IEnumerable<Book> GetAllGenreBooks(long genre_Id);
+        IEnumerable<Books> GetAllGenreBooks(long genre_Id);
     }
 }

@@ -75,7 +75,7 @@
             }
             catch (FormatException)
             {
-                return Conflict("Can`t delete genre while it has books of this genre");               
+                return Conflict("Can`t delete genre while it has books of this genre");
             }
 
             return Ok();
@@ -105,7 +105,7 @@
         [HttpGet("{id}/books")]
         public IActionResult GetBooksOfGenre(long id)
         {
-            List<Book> books = _libraryService.GetAllGenreBooks(id).ToList();
+            List<Books> books = _libraryService.GetAllGenreBooks(id).ToList();
             if (books.Count == 0)
             {
                 return NotFound("There is no book of this genre!");

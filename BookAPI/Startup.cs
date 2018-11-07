@@ -6,6 +6,7 @@
     using BusinessLogic_BookAPI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Swashbuckle.AspNetCore.Swagger;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Class for launching configuration
@@ -16,13 +17,21 @@
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IBookShelf, LibraryObjectService>();
+            /*services.AddSingleton<IBookShelf, LibraryObjectService>();
             services.AddSingleton<IGenreService, LibraryObjectService>();
             services.AddSingleton<IAuthorService, LibraryObjectService>();
             services.AddSingleton<ILibraryPairCreationManager, LibraryObjectService>();
             services.AddSingleton<ILibraryService, LibraryObjectService>();
-            services.AddSingleton<IDataProvider, ObjectDataProvider>();
+            services.AddSingleton<IDataProvider, ObjectDataProvider>();*/       
+            services.AddScoped<IBookShelf, LibraryDbService>();
+            services.AddScoped<IGenreService, LibraryDbService>();
+            services.AddScoped<IAuthorService, LibraryDbService>();
+            services.AddScoped<ILibraryPairCreationManager, LibraryDbService>();
+            services.AddScoped<ILibraryService, LibraryDbService>();
+            services.AddScoped<IDataProvider, ObjectDataProvider>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            var connection = @"Server=(localdb)\mssqllocaldb;Initial Catalog=LibraryData;Integrated Security=True;";
+            services.AddDbContext<LibraryDatabase>(options => options.UseSqlServer(connection, b=>b.MigrationsAssembly("BookAPI")));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info

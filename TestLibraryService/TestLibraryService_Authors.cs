@@ -28,12 +28,12 @@
         /// Initializes the library instance with some authors.
         /// </summary>
         /// <param name="context">The context.</param>
-        [ClassInitialize]
-        public static void Initialize(TestContext context)
+        [TestInitialize]
+        public void Initialize()
         {
             _authors = new List<Author> {
-                new Author("Test1","Testcountry1"),
-                new Author("Test2","Testcountry2")
+                new Author(){ Id = 1, FullName = "Test1", Country = "Testcountry1" },
+                new Author(){ Id = 2, FullName = "Test2", Country = "Testcountry2" }
             };
         }
 
@@ -89,15 +89,15 @@
         /// <param name="fullname">Fullname.</param>
         /// <param name="country">The country.</param>
         [TestMethod]
-        [DataRow("Testauthor", "Lemuria")]
-        [DataRow("Hello", "Ukraine")]
-        public void TestAddAuthor_Correct(string fullname, string country)
+        [DataRow(3, "Testauthor", "Lemuria")]
+        [DataRow(4, "Hello", "Ukraine")]
+        public void TestAddAuthor_Correct(int id, string fullname, string country)
         {
             var library = new MockDataProvider().MockSetAuthors(_authors).Object;
 
-            Author result = new LibraryObjectService(library).CreateAuthor(new Author(fullname, country));
+            Author result = new LibraryObjectService(library).CreateAuthor(new Author(){ Id = id, FullName = fullname, Country = country });
 
-            Assert.AreEqual(result, new Author(fullname, country));
+            Assert.AreEqual(result, new Author(){ Id = id, FullName = fullname, Country = country });
         }
 
         /// <summary>
@@ -113,9 +113,9 @@
         {
             var library = new MockDataProvider().MockSetAuthors(_authors).Object;
 
-            Author result = new LibraryObjectService(library).UpdateAuthor(id, new Author(fullname, country));
+            Author result = new LibraryObjectService(library).UpdateAuthor(id, new Author() { FullName = fullname, Country = country });
 
-            Assert.AreEqual(result, new Author(fullname, country));
+            Assert.AreEqual(result, new Author() { FullName = fullname, Country = country });
         }
 
         /// <summary>
@@ -125,13 +125,13 @@
         /// <param name="fullname">The fullname.</param>
         /// <param name="country">The country.</param>
         [TestMethod]
-        [DataRow(3, "TestingWrong", "Ukraine")]
+        [DataRow(5, "TestingWrong", "Ukraine")]
         [DataRow(-1, "TestingWronginRome", "Rome")]
         public void TestUpdateAuthor_InCorrect(long id, string fullname, string country)
         {
             var library = new MockDataProvider().MockSetAuthors(_authors).Object;
 
-            Author result = new LibraryObjectService(library).UpdateAuthor(id, new Author(fullname, country));
+            Author result = new LibraryObjectService(library).UpdateAuthor(id, new Author() { FullName = fullname, Country = country });
 
             Assert.IsNull(result);
         }
@@ -143,7 +143,7 @@
         [TestMethod]
         [DataRow(2)]
         [DataRow(1)]
-        public void TestDeleteAuthor_Correct(long id)
+        public void TestDeleteAuthor_Correct(int id)
         {
             var library = SetTestBooks(id);
 
@@ -177,12 +177,12 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Test data.</returns>
-        private static IDataProvider SetTestBooks(long id)
+        private static IDataProvider SetTestBooks(int id)
         {
             // Setting test data for mock to test correct deletion of an author
             _mockData = new MockDataProvider().MockSetAuthors(_authors).
-                                               MockSetBooks(new List<Book> { new Book("Test", 100, 100) }).
-                                               MockSetBookAuthorPair(new List<BookAuthorPair> { new BookAuthorPair(1, id) });
+                                               MockSetBooks(new List<Books> { new Books() { Id = 1, Title = "Test", NumberOfPages = 100, Year = 100 } }).
+                                               MockSetBookAuthorPair(new List<BookAuthorPair> { new BookAuthorPair() { Book_Id = 1, Author_Id = id } });
             return _mockData.Object;
         }
     }

@@ -11,7 +11,7 @@
         /// <param name="book_id">The book identifier.</param>
         /// <param name="genre_id">The genre identifier.</param>
         /// <returns>Is added new link.</returns>
-        bool AddGenreToBook(long book_id, long genre_id);
+        bool AddGenreToBook(int book_id, int genre_id);
 
         /// <summary>
         /// Adds the author of book.
@@ -19,7 +19,7 @@
         /// <param name="book_id">The book identifier.</param>
         /// <param name="author_id">The author identifier.</param>
         /// <returns>Is added new link.</returns>
-        bool AddAuthorOfBook(long book_id, long author_id);
+        bool AddAuthorOfBook(int book_id, int author_id);
 
         /// <summary>
         /// Updates the genre of a book.
@@ -28,7 +28,7 @@
         /// <param name="genre_id">The genre identifier.</param>
         /// <param name="newGenre_id">The identifier of a new genre.</param>
         /// <returns>Is updated.</returns>
-        bool UpdateGenreOfBook(long book_id, long genre_id, long newGenre_id);
+        bool UpdateGenreOfBook(int book_id, int genre_id, int newGenre_id);
 
         /// <summary>
         /// Updates the author of book.
@@ -37,7 +37,7 @@
         /// <param name="author_id">The author identifier.</param>
         /// <param name="newAuthor_id">The identifier of a new author.</param>
         /// <returns>Is updated.</returns>
-        bool UpdateAuthorOfBook(long book_id, long author_id, long newAuthor_id);
+        bool UpdateAuthorOfBook(int book_id, int author_id, int newAuthor_id);
 
         /// <summary>
         /// Deletes the genre of a book.

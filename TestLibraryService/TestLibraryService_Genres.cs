@@ -28,12 +28,12 @@
         /// Initializes the library instance with some genres.
         /// </summary>
         /// <param name="context">The context.</param>
-        [ClassInitialize]
-        public static void Initialize(TestContext context)
+        [TestInitialize]
+        public void Initialize()
         {
             _genres = new List<Genre> {
-                new Genre("Test1"),
-                new Genre("Test2")
+                new Genre(){ Id = 1, Naming = "Test1" },
+                new Genre(){ Id = 2, Naming = "Test2" }
             };           
         }
 
@@ -55,15 +55,15 @@
         /// </summary>
         /// <param name="naming">The naming of genre.</param>
         [TestMethod]
-        [DataRow("Test")]
-        [DataRow("NewTest")]
-        public void TestAddGenre_Correct(string naming)
+        [DataRow(3, "Test")]
+        [DataRow(4, "NewTest")]
+        public void TestAddGenre_Correct(int id, string naming)
         {
             var library = new MockDataProvider().MockSetGenres(_genres).Object;
 
-            Genre result = new LibraryObjectService(library).CreateGenre(new Genre(naming));
+            Genre result = new LibraryObjectService(library).CreateGenre(new Genre() { Id = id, Naming = naming });
 
-            Assert.AreEqual(result, new Genre(naming));
+            Assert.AreEqual(result, new Genre() { Id = id, Naming = naming });
         }
 
         /// <summary>
@@ -76,7 +76,7 @@
         public void TestDeleteGenre_Correct(long id)
         {
             var library = new MockDataProvider().MockSetGenres(_genres).
-                                                 MockSetBooks(new List<Book> { new Book("Test", 1, 1) }).
+                                                 MockSetBooks(new List<Books> { new Books() { Id = 1, Title = "Test", NumberOfPages = 1, Year = 1 } }).
                                                  MockSetBookGenrePair(new List<BookGenrePair> { }).Object;
             var result = new LibraryObjectService(library);
 
@@ -93,7 +93,7 @@
         [DataRow(2)]
         [DataRow(1)]
         [ExpectedException(typeof(FormatException))]
-        public void TestDeleteGenre_FormatExceptionThrow(long id)
+        public void TestDeleteGenre_FormatExceptionThrow(int id)
         {
             var library = SetTestBooks(id);
             var result = new LibraryObjectService(library);
@@ -123,12 +123,12 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Test data.</returns>
-        private static IDataProvider SetTestBooks(long id)
+        private static IDataProvider SetTestBooks(int id)
         {
             // Setting test data for mock to test correct deletion of an author
             _mockData = new MockDataProvider().MockSetGenres(_genres).
-                                               MockSetBooks(new List<Book> { new Book("Test", 1, 1) }).
-                                               MockSetBookGenrePair(new List<BookGenrePair> { new BookGenrePair(1, id) });
+                                               MockSetBooks(new List<Books> { new Books() { Id = 1, Title = "Test", NumberOfPages = 1, Year = 1 } }).
+                                               MockSetBookGenrePair(new List<BookGenrePair> { new BookGenrePair() { Book_Id = 1, Genre_Id = id } });
             return _mockData.Object;
         }
     }

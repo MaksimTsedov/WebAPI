@@ -124,7 +124,7 @@
         [HttpGet("{id}/books")]
         public IActionResult GetBooksOfAuthor(long id)
         {
-            List<Book> books = _libraryService.GetAuthorBooks(id).ToList();
+            List<Books> books = _libraryService.GetAuthorBooks(id).ToList();
             if (books.Count == 0)
             {
                 return NotFound("No books written by that author!");
